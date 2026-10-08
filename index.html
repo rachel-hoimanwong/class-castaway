@@ -47,9 +47,11 @@
             min-height: 100vh;
             padding: 20px;
                /* 模擬深海背景 */
-            background: radial-gradient(circle at 50% 50%, #0c4a6e 0%, #0ff4e0 50%, #82aeb7 100%);
+            background: radial-gradient(circle at 50% 50%, #0c4a6e 0%, #82aeb7 50%, #0ff4e0 100%);
             overflow: hidden;
         }
+
+            /* 海浪波紋效果 (裝飾用) */
         .ocean-container::before {
             content: '';
             position: absolute;
@@ -64,6 +66,7 @@
             0% { background-position: 0 0; }
             100% { background-position: 200px 0; }
         }
+        /* 群島容器 (使用相對定位，讓島嶼隨機散落) */
         .archipelago {
             position: relative;
             width: 100%;
@@ -72,9 +75,10 @@
             flex-wrap: wrap;
             justify-content: center;
             align-content: center;
-            gap: 40px 30px;
+            gap: 40px 30px; /* 控制島嶼之間的間距 */
             padding: 40px 10px;
         }
+          /* ================= 單一島嶼 ================= */
         .island {
             position: relative;
             display: flex;
@@ -82,6 +86,7 @@
             align-items: center;
             justify-content: center;
             transition: transform 0.3s ease;
+            /* 稍微錯開高度，製造隨機感 */
             margin-top: var(--random-y, 0px);
             margin-left: var(--random-x, 0px);
         }
@@ -89,15 +94,17 @@
             transform: scale(1.05) translateY(-5px);
             z-index: 50;
         }
+         /* 島嶼畫布 (圓形，無邊框) */
         .island-canvas {
             position: relative;
-            width: 150px;
+            width: 150px; /* 基礎大小 */
             height: 150px;
             display: flex;
             justify-content: center;
             align-items: center;
             transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
+           /* 島嶼陸地 (填海效果) */
         .island-land {
             background-color: #22c55e;
             border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
