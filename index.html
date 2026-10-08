@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>班級大航海：無盡孤島</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #0f172a;
+            color: #fff;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+        @keyframes neonCyberpunk {
+            0%, 100% {
+                text-shadow: 0 0 5px #fff, 0 0 10px #fff,
+                    0 0 20px #00e5ff, 0 0 40px #00e5ff, 0 0 80px #00e5ff;
+                color: #fff;
+            }
+            33% {
+                text-shadow: 0 0 5px #fff, 0 0 10px #fff,
+                    0 0 20px #ffee00, 0 0 40px #ffee00, 0 0 80px #ffee00;
+                color: #ffee00;
+            }
+            66% {
+                text-shadow: 0 0 5px #fff, 0 0 10px #fff,
+                    0 0 20px #d400ff, 0 0 40px #d400ff, 0 0 80px #d400ff;
+                color: #d400ff;
+            }
+        }
+        .neon-title {
+            font-size: 3.5rem;
+            font-weight: 900;
+            text-align: center;
+            letter-spacing: 4px;
+            animation: neonCyberpunk 3s infinite alternate;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+        .ocean-container {
+            position: relative;
+            width: 100%;
+            min-height: 100vh;
+            padding: 20px;
+            background: radial-gradient(circle at 50% 50%, #0c4a6e 0%, #082f49 50%, #0f172a 100%);
+            overflow: hidden;
+        }
+        .ocean-container::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 20"><path d="M0 10 Q 25 0 50 10 T 100 10" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/></svg>');
+            background-size: 200px 100px;
+            opacity: 0.5;
+            pointer-events: none;
+            animation: waveMove 10s linear infinite;
+        }
+        @keyframes waveMove {
+            0% { background-position: 0 0; }
+            100% { background-position: 200px 0; }
+        }
+        .archipelago {
+            position: relative;
+            width: 100%;
+            min-height: 80vh;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-content: center;
+            gap: 40px 30px;
+            padding: 40px 10px;
+        }
+        .island {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s ease;
+            margin-top: var(--random-y, 0px);
+            margin-left: var(--random-x, 0px);
+        }
+        .island:hover {
+            transform: scale(1.05) translateY(-5px);
+            z-index: 50;
+        }
+        .island-canvas {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .island-land {
+            background-color: #22c55e;
+            border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            transition: all 0.5s ease;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.4), inset 0 0 20px rgba(0,0,0,0.2);
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+        }
+        .core-building {
+            font-size: 3rem;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -60%);
+            z-index: 10;
+            filter: drop-shadow(2px 4px 4px rgba(0,0,0,0.5));
+            transition: all 0.3s;
+        }
+        .student-info {
+            position: absolute;
+            top: 65%;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            z-index: 15;
+            width: 100%;
+            pointer-events: none;
+        }
+        .student-name {
+            font-size: 0.9rem;
+            font-weight: 900;
+            color: #fff;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+            white-space: nowrap;
+        }
+        .student-stats {
+            font-size: 0.65rem;
+            color: #e2e8f0;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+            background: rgba(0,0,0,0.5);
+            padding: 1px 6px;
+            border-radius: 10px;
+            display: inline-block;
+            margin-top: 2px;
+            white-space: nowrap;
+        }
+        .micro-item {
+            position: absolute;
+            font-size: 0.9rem;
+            z-index: 5;
+            animation: float 3s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-3px); }
+        }
+        .disaster-storm .island-land {
+            filter: brightness(0.7) grayscale(0.5);
+        }
+        .disaster-storm .core-building::after {
+            content: '💨';
+            position: absolute;
+            top: -15px;
+            right: -10px;
+            font-size: 1.5rem;
+            animation: smoke 2s infinite;
+        }
+        @keyframes smoke {
+            0% { transform: translateY(0) scale(1); opacity: 0.8; }
+            100% { transform: translateY(-20px) scale(1.5); opacity: 0; }
+        }
+        .lightning {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+            opacity: 0;
+            animation: flash 3s infinite;
+            pointer-events: none;
+            z-index: 20;
+        }
+        @keyframes flash {
+            0%, 95%, 100% { opacity: 0; }
+            96%, 98% { opacity: 1; }
+        }
+        .disaster-kraken .island-land {
+            background-color: #1a1a1a;
+            border: 3px solid #ef4444;
+            box-shadow: 0 0 20px #ef4444;
+            animation: shake 0.5s infinite;
+        }
+        @keyframes shake {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            10% { transform: translate(-1px, -2px) rotate(-1deg); }
+            20% { transform: translate(-3px, 0px) rotate(1deg); }
+            30% { transform: translate(3px, 2px) rotate(0deg); }
+            40% { transform: translate(1px, -1px) rotate(1deg); }
+            50% { transform: translate(-1px, 2px) rotate(-1deg); }
+            60% { transform: translate(-3px, 1px) rotate(0deg); }
+            70% { transform: translate(3px, 1px) rotate(-1deg); }
+            80% { transform: translate(-1px, -1px) rotate(1deg); }
+            90% { transform: translate(1px, 2px) rotate(0deg); }
+            100% { transform: translate(1px, -2px) rotate(-1deg); }
+        }
+        .kraken-tentacle {
+            position: absolute;
+            font-size: 4rem;
+            z-index: 20;
+            animation: tentacleSwing 2s infinite ease-in-out;
+            pointer-events: none;
+        }
+        @keyframes tentacleSwing {
+            0%, 100% { transform: rotate(-10deg) translateY(0); }
+            50% { transform: rotate(10deg) translateY(-5px); }
+        }
+        .disaster-ruin .island-land {
+            background-color: #4a4a4a;
+        }
+        .repair-warning {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.8);
+            color: #fbbf24;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            white-space: nowrap;
+            animation: blink 1s infinite;
+            z-index: 30;
+            border: 1px solid #fbbf24;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="ocean-container">
+        <h1 class="neon-title pt-8">班級大航海<br>無盡孤島</h1>
+        <div class="text-center text-cyan-400 text-sm mb-4 font-bold tracking-widest">CLASS CASTAWAY</div>
+        <div class="archipelago" id="archipelago"></div>
+    </div>
+
+    <script>
+        // ★★★ 請把這裡改成您的 Apps Script Web App 網址 ★★★
+        const API_URL = 'https://script.google.com/a/macros/ats.edu.hk/s/AKfycbylCeRYjGoQajZ7XZIm6E5zWXxmXDMbegq0lv51Xg1Am0_Mq4TxaCtKZREBYUawn6W2dw/exec';
+
+        const LEVELS = [
+            { level: 0, name: '荒蕪', maxExp: 0, size: 30, building: '🪨' },
+            { level: 1, name: '荒島', maxExp: 15, size: 45, building: '⛺' },
+            { level: 2, name: '營地', maxExp: 40, size: 60, building: '🏕️' },
+            { level: 3, name: '部落', maxExp: 80, size: 75, building: '🏰' },
+            { level: 4, name: '城鎮', maxExp: 140, size: 90, building: '🏙️' },
+            { level: 5, name: '帝國', maxExp: Infinity, size: 105, building: '🌆' }
+        ];
+
+        let students = [];
+
+        function getLevelInfo(exp) {
+            for (let i = LEVELS.length - 1; i >= 0; i--) {
+                if (exp > LEVELS[i].maxExp) continue;
+                return LEVELS[i];
+            }
+            return LEVELS[0];
+        }
+
+        function renderOcean() {
+            const container = document.getElementById('archipelago');
+            container.innerHTML = '';
+
+            let maxExp = -1;
+            students.forEach(s => { if (s.total_exp > maxExp) maxExp = s.total_exp; });
+
+            students.forEach((student, index) => {
+                const levelInfo = getLevelInfo(student.total_exp);
+                const landSize = levelInfo.size;
+
+                let disasterClass = '';
+                let extraHTML = '';
+
+                if (student.repair_stage === 1) {
+                    disasterClass = 'disaster-kraken';
+                    extraHTML += `<div class="kraken-tentacle" style="top: -20px; left: -20px;">🐙</div>`;
+                    extraHTML += `<div class="kraken-tentacle" style="bottom: -20px; right: -20px; transform: scaleX(-1);">🐙</div>`;
+                } else if (student.repair_stage === 2) {
+                    disasterClass = 'disaster-ruin';
+                    extraHTML += `<div class="repair-warning">🚧 維修中... 🚧</div>`;
+                } else if (student.today_score <= -6) {
+                    disasterClass = 'disaster-kraken';
+                } else if (student.today_score < 0) {
+                    disasterClass = 'disaster-storm';
+                    extraHTML += `<div class="lightning"></div>`;
+                }
+
+                let microItemsHTML = '';
+                const itemCount = Math.min(student.total_exp, 25);
+                for (let i = 0; i < itemCount; i++) {
+                    const angle = Math.random() * Math.PI * 2;
+                    const radius = Math.random() * 40;
+                    const randX = 50 + Math.cos(angle) * radius;
+                    const randY = 50 + Math.sin(angle) * radius;
+                    let emoji = '🌸';
+                    if (i % 3 === 0) emoji = '🌿';
+                    if (i % 5 === 0) emoji = '🌴';
+                    if (i % 7 === 0) emoji = '🐕';
+                    if (i % 11 === 0) emoji = '🤖';
+                    microItemsHTML += `<div class="micro-item" style="left: ${randX}%; top: ${randY}%; animation-delay: ${Math.random() * 2}s;">${emoji}</div>`;
+                }
+
+                let crownHTML = '';
+                if (student.total_exp === maxExp && maxExp > 0) {
+                    crownHTML = `<div style="position: absolute; top: -20px; right: -10px; font-size: 2rem; z-index: 30; animation: float 2s infinite;">👑</div>`;
+                }
+
+                const randomX = (index % 3 - 1) * 20;
+                const randomY = (index % 4 - 1.5) * 25;
+
+                const island = document.createElement('div');
+                island.className = `island ${disasterClass}`;
+                island.style.setProperty('--random-x', `${randomX}px`);
+                island.style.setProperty('--random-y', `${randomY}px`);
+                island.style.width = `${landSize + 40}px`;
+                island.style.height = `${landSize + 40}px`;
+
+                island.innerHTML = `
+                    <div class="island-canvas" style="width: ${landSize}px; height: ${landSize}px;">
+                        ${extraHTML}
+                        <div class="island-land">
+                            <div class="core-building">${levelInfo.building}</div>
+                            ${microItemsHTML}
+                            <div class="student-info">
+                                <div class="student-name">${student.id}. ${student.name}</div>
+                                <div class="student-stats">LV${levelInfo.level} ${levelInfo.name} | ${student.total_exp} EXP</div>
+                            </div>
+                        </div>
+                        ${crownHTML}
+                    </div>
+                `;
+                container.appendChild(island);
+            });
+        }
+
+        // ★★★ 從 Google Sheets 讀取資料 ★★★
+        async function fetchStudents() {
+            try {
+                const response = await fetch(API_URL);
+                const data = await response.json();
+                students = data;
+                renderOcean();
+            } catch (err) {
+                console.error('讀取資料失敗：', err);
+            }
+        }
+
+        // 每 10 秒更新一次
+        setInterval(fetchStudents, 10000);
+        window.addEventListener('load', fetchStudents);
+    </script>
+</body>
+</html>
