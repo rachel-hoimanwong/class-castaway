@@ -68,30 +68,24 @@
         }
         /* 群島容器 (使用相對定位，讓島嶼隨機散落) */
         .archipelago {
-            position: relative;
-            width: 100%;
-            min-height: 80vh;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            align-content: center;
-            gap: 40px 30px; /* 控制島嶼之間的間距 */
-            padding: 40px 10px;
-        }
+    position: relative;
+    width: 100%;
+    min-height: 85vh;
+    padding: 40px 10px;
+}
           /* ================= 單一島嶼 ================= */
-        .island {
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            transition: transform 0.3s ease;
-            /* 稍微錯開高度，製造隨機感 */
-            margin-top: var(--random-y, 0px);
-            margin-left: var(--random-x, 0px);
-        }
+       .island {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease;
+    transform: translate(-50%, -50%);
+}
+         
         .island:hover {
-            transform: scale(1.05) translateY(-5px);
+            transform: translate(-50%, -50%) scale(1.05) translateY(-5px);
             z-index: 50;
         }
          /* 島嶼畫布 (圓形，無邊框) */
@@ -255,14 +249,142 @@
             0%, 100% { opacity: 1; }
             50% { opacity: 0.3; }
         }
+
+        /* ================= 規則說明看板 ================= */
+.rules-board {
+    max-width: 900px;
+    margin: 20px auto 40px;
+    padding: 20px;
+    background: rgba(15, 23, 42, 0.85);
+    border: 2px solid #00e5ff;
+    border-radius: 16px;
+    box-shadow: 0 0 20px rgba(0, 229, 255, 0.3);
+}
+
+.rules-title {
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: #00e5ff;
+    text-shadow: 0 0 10px rgba(0, 229, 255, 0.8);
+    margin-bottom: 16px;
+    letter-spacing: 3px;
+}
+
+.rules-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.rule-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(30, 41, 59, 0.8);
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #334155;
+}
+
+.rule-icon {
+    font-size: 1.8rem;
+    flex-shrink: 0;
+}
+
+.rule-name {
+    font-size: 0.85rem;
+    font-weight: bold;
+    color: #fff;
+}
+
+.rule-exp {
+    font-size: 0.7rem;
+    color: #94a3b8;
+}
+
+.rules-note {
+    text-align: center;
+    font-size: 0.8rem;
+    color: #cbd5e1;
+    padding-top: 10px;
+    border-top: 1px dashed #334155;
+}
+
+/* 手機版調整：一行 2 個 */
+@media (max-width: 600px) {
+    .rules-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .rule-icon {
+        font-size: 1.5rem;
+    }
+    .rule-name {
+        font-size: 0.75rem;
+    }
+}
     </style>
 </head>
 <body>
 
     <div class="ocean-container">
         <h1 class="neon-title pt-8">班級大航海<br>無盡孤島</h1>
-        <div class="text-center text-cyan-400 text-sm mb-8 font-bold tracking-widest">CLASS CASTAWAY</div>
-        <div class="archipelago" id="archipelago"></div>
+<div class="text-center text-cyan-400 text-sm mb-4 font-bold tracking-widest">CLASS CASTAWAY</div>
+
+<!-- ★★★ 規則說明看板 ★★★ -->
+<div class="rules-board">
+    <h2 class="rules-title">⚓ 航海指南 ⚓</h2>
+    <div class="rules-grid">
+        <div class="rule-item">
+            <div class="rule-icon">🪨</div>
+            <div class="rule-text">
+                <div class="rule-name">LV0 荒蕪</div>
+                <div class="rule-exp">0 EXP</div>
+            </div>
+        </div>
+        <div class="rule-item">
+            <div class="rule-icon">⛺</div>
+            <div class="rule-text">
+                <div class="rule-name">LV1 荒島</div>
+                <div class="rule-exp">1 ~ 20 EXP</div>
+            </div>
+        </div>
+        <div class="rule-item">
+            <div class="rule-icon">🏕️</div>
+            <div class="rule-text">
+                <div class="rule-name">LV2 營地</div>
+                <div class="rule-exp">21 ~ 45 EXP</div>
+            </div>
+        </div>
+        <div class="rule-item">
+            <div class="rule-icon">🏰</div>
+            <div class="rule-text">
+                <div class="rule-name">LV3 部落</div>
+                <div class="rule-exp">46 ~ 90 EXP</div>
+            </div>
+        </div>
+        <div class="rule-item">
+            <div class="rule-icon">🏙️</div>
+            <div class="rule-text">
+                <div class="rule-name">LV4 城鎮</div>
+                <div class="rule-exp">91 ~ 150 EXP</div>
+            </div>
+        </div>
+        <div class="rule-item">
+            <div class="rule-icon">🌆</div>
+            <div class="rule-text">
+                <div class="rule-name">LV5 帝國</div>
+                <div class="rule-exp">151+ EXP</div>
+            </div>
+        </div>
+    </div>
+    <div class="rules-note">
+        🌸 每 1~2 點 EXP 生成花草 ｜ 🌴 每 3~4 點 EXP 生成樹木 ｜ 🤖 每 5~6 點 EXP 生成動物與機械
+    </div>
+</div>
+
+<div class="archipelago" id="archipelago"></div>
     </div>
 
     <script>
@@ -298,80 +420,134 @@
 }
 
         function renderOcean() {
-            const container = document.getElementById('archipelago');
-            container.innerHTML = '';
+    const container = document.getElementById('archipelago');
+    container.innerHTML = '';
 
-            let maxExp = -1;
-            students.forEach(s => { if (s.total_exp > maxExp) maxExp = s.total_exp; });
+    // 找出最高分
+    let maxExp = -1;
+    students.forEach(s => { if (s.total_exp > maxExp) maxExp = s.total_exp; });
 
-            students.forEach((student, index) => {
-                const levelInfo = getLevelInfo(student.total_exp);
-                const landSize = levelInfo.size;
+    // 容器實際寬高
+    const containerWidth = container.clientWidth;
+    const containerHeight = container.clientHeight;
 
-                let disasterClass = '';
-                let extraHTML = '';
+    // 島嶼由下往上排列：先決定每個島嶼的「列」
+    // 假設一行最多 4 個，共 4 行
+    const cols = 4;
+    const rows = Math.ceil(students.length / cols);
 
-                if (student.repair_stage === 1) {
-                    disasterClass = 'disaster-kraken';
-                    extraHTML += `<div class="kraken-tentacle" style="top: -20px; left: -20px;">🐙</div>`;
-                    extraHTML += `<div class="kraken-tentacle" style="bottom: -20px; right: -20px; transform: scaleX(-1);">🐙</div>`;
-                } else if (student.repair_stage === 2) {
-                    disasterClass = 'disaster-ruin';
-                    extraHTML += `<div class="repair-warning">🚧 維修中... 🚧</div>`;
-                } else if (student.today_score <= -6) {
-                    disasterClass = 'disaster-kraken';
-                } else if (student.today_score < 0) {
-                    disasterClass = 'disaster-storm';
-                    extraHTML += `<div class="lightning"></div>`;
-                }
+    students.forEach((student, index) => {
+        const levelInfo = getLevelInfo(student.total_exp);
+        const landSize = levelInfo.size;
 
-                let microItemsHTML = '';
-                const itemCount = Math.min(student.total_exp, 25);
-                for (let i = 0; i < itemCount; i++) {
-                    const angle = Math.random() * Math.PI * 2;
-                    const radius = Math.random() * 40;
-                    const randX = 50 + Math.cos(angle) * radius;
-                    const randY = 50 + Math.sin(angle) * radius;
-                    let emoji = '🌸';
-                    if (i % 3 === 0) emoji = '🌿';
-                    if (i % 5 === 0) emoji = '🌴';
-                    if (i % 7 === 0) emoji = '🐕';
-                    if (i % 11 === 0) emoji = '🤖';
-                    microItemsHTML += `<div class="micro-item" style="left: ${randX}%; top: ${randY}%; animation-delay: ${Math.random() * 2}s;">${emoji}</div>`;
-                }
+        // 計算這個島嶼在第幾列、第幾欄
+        const col = index % cols;
+        const row = Math.floor(index / cols);
 
-                let crownHTML = '';
-                if (student.total_exp === maxExp && maxExp > 0) {
-                    crownHTML = `<div style="position: absolute; top: -20px; right: -10px; font-size: 2rem; z-index: 30; animation: float 2s infinite;">👑</div>`;
-                }
+        // 基礎位置（由上往下算，但我們要讓第一列在最下面，所以反過來）
+        // row 0 放最底，row (rows-1) 放最頂
+        const rowFromBottom = row;
 
-                const randomX = (index % 3 - 1) * 20;
-                const randomY = (index % 4 - 1.5) * 25;
+        // 基礎 X 座標：平均分佈在容器寬度內
+        const baseX = (containerWidth / cols) * (col + 0.5);
 
-                const island = document.createElement('div');
-                island.className = `island ${disasterClass}`;
-                island.style.setProperty('--random-x', `${randomX}px`);
-                island.style.setProperty('--random-y', `${randomY}px`);
-                island.style.width = `${landSize + 40}px`;
-                island.style.height = `${landSize + 40}px`;
+        // 基礎 Y 座標：從底部往上
+        const baseY = containerHeight - ((containerHeight / rows) * (rowFromBottom + 0.5));
 
-                island.innerHTML = `
-                    <div class="island-canvas" style="width: ${landSize}px; height: ${landSize}px;">
-                        ${extraHTML}
-                        <div class="island-land">
-                            <div class="core-building">${levelInfo.building}</div>
-                            ${microItemsHTML}
-                            <div class="student-info">
-                                <div class="student-name">${student.id}. ${student.name}</div>
-                                <div class="student-stats">LV${levelInfo.level} ${levelInfo.name} | ${student.total_exp} EXP</div>
-                            </div>
-                        </div>
-                        ${crownHTML}
-                    </div>
-                `;
-                container.appendChild(island);
-            });
+        // 加入隨機偏移，讓島嶼不要對齊
+        const offsetX = (Math.random() - 0.5) * (containerWidth / cols) * 0.5;
+        const offsetY = (Math.random() - 0.5) * (containerHeight / rows) * 0.5;
+
+        const posX = baseX + offsetX;
+        const posY = baseY + offsetY;
+
+        // 天災狀態
+        let disasterClass = '';
+        let extraHTML = '';
+
+        if (student.repair_stage === 1) {
+            disasterClass = 'disaster-kraken';
+            extraHTML += `<div class="kraken-tentacle" style="top: -20px; left: -20px;">🐙</div>`;
+            extraHTML += `<div class="kraken-tentacle" style="bottom: -20px; right: -20px; transform: scaleX(-1);">🐙</div>`;
+        } else if (student.repair_stage === 2) {
+            disasterClass = 'disaster-ruin';
+            extraHTML += `<div class="repair-warning">🚧 維修中...</div>`;
+        } else if (student.today_score <= -6) {
+            disasterClass = 'disaster-kraken';
+        } else if (student.today_score < 0) {
+            disasterClass = 'disaster-storm';
+            extraHTML += `<div class="lightning"></div>`;
         }
+
+        // ★★★ 新的裝飾物生成規則 ★★★
+        let microItemsHTML = '';
+        const exp = student.total_exp;
+
+        // 隨機在圓形範圍內取點
+        function randomPosition() {
+            const angle = Math.random() * Math.PI * 2;
+            const radius = Math.random() * 42; // 0~42% 半徑
+            return {
+                x: 50 + Math.cos(angle) * radius,
+                y: 50 + Math.sin(angle) * radius
+            };
+        }
+
+        // 規則 1：每 1~2 點 EXP，生成花朵或綠草
+        const flowerCount = Math.floor(exp / 1) + Math.floor(exp / 2);
+        for (let i = 0; i < flowerCount && i < 20; i++) {
+            const pos = randomPosition();
+            const emoji = Math.random() < 0.5 ? '🌸' : '🌿';
+            microItemsHTML += `<div class="micro-item" style="left: ${pos.x}%; top: ${pos.y}%; animation-delay: ${Math.random() * 2}s;">${emoji}</div>`;
+        }
+
+        // 規則 2：每 3~4 點 EXP，生成椰子樹或橡樹
+        const treeCount = Math.floor(exp / 3) + Math.floor(exp / 4);
+        for (let i = 0; i < treeCount && i < 12; i++) {
+            const pos = randomPosition();
+            const emoji = Math.random() < 0.5 ? '🌴' : '🌳';
+            microItemsHTML += `<div class="micro-item" style="left: ${pos.x}%; top: ${pos.y}%; font-size: 1.1rem; animation-delay: ${Math.random() * 2}s;">${emoji}</div>`;
+        }
+
+        // 規則 3：每 5~6 點 EXP，生成動物、車、機械人
+        const creatureCount = Math.floor(exp / 5) + Math.floor(exp / 6);
+        const creatureEmojis = ['🐕', '🐓', '🚗', '🤖'];
+        for (let i = 0; i < creatureCount && i < 10; i++) {
+            const pos = randomPosition();
+            const emoji = creatureEmojis[Math.floor(Math.random() * creatureEmojis.length)];
+            microItemsHTML += `<div class="micro-item" style="left: ${pos.x}%; top: ${pos.y}%; font-size: 1rem; animation-delay: ${Math.random() * 2}s;">${emoji}</div>`;
+        }
+
+        // 皇冠
+        let crownHTML = '';
+        if (student.total_exp === maxExp && maxExp > 0) {
+            crownHTML = `<div style="position: absolute; top: -20px; right: -10px; font-size: 2rem; z-index: 30; animation: float 2s infinite;">👑</div>`;
+        }
+
+        const island = document.createElement('div');
+        island.className = `island ${disasterClass}`;
+        island.style.left = `${posX}px`;
+        island.style.top = `${posY}px`;
+        island.style.width = `${landSize + 40}px`;
+        island.style.height = `${landSize + 40}px`;
+
+        island.innerHTML = `
+            <div class="island-canvas" style="width: ${landSize}px; height: ${landSize}px;">
+                ${extraHTML}
+                <div class="island-land">
+                    <div class="core-building">${levelInfo.building}</div>
+                    ${microItemsHTML}
+                    <div class="student-info">
+                        <div class="student-name">${student.id}. ${student.name}</div>
+                        <div class="student-stats">LV${levelInfo.level} ${levelInfo.name} | ${student.total_exp} EXP</div>
+                    </div>
+                </div>
+                ${crownHTML}
+            </div>
+        `;
+        container.appendChild(island);
+    });
+}
 
         // ★★★ 從 Google Sheets 讀取資料 ★★★
         async function fetchStudents() {
