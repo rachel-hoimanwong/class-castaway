@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>老師Control - 班級大航海</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #0f172a;
+            color: #fff;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .modal-overlay {
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(5px);
+            display: none;
+            justify-content: center;
+            align-items: flex-end;
+            z-index: 200;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal-content {
+            background: #1e293b;
+            width: 100%;
+            max-width: 600px;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+            padding: 20px;
+            animation: slideUp 0.3s ease-out;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+        .student-btn {
+            background: #334155;
+            border: 1px solid #475569;
+            border-radius: 12px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+            width: 100%;
+            text-align: left;
+        }
+        .student-btn:active { background: #475569; transform: scale(0.98); }
+        .action-btn {
+            flex: 1;
+            padding: 20px 10px;
+            border-radius: 15px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: none;
+        }
+        .action-btn:active { transform: scale(0.95); }
+        .btn-good { background-color: #22c55e; color: white; }
+        .btn-bad { background-color: #ef4444; color: white; }
+        .btn-other { background-color: #eab308; color: black; }
+        .score-option-btn {
+            background: #334155;
+            border: 1px solid #475569;
+            border-radius: 10px;
+            padding: 15px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            color: white;
+            width: 100%;
+            text-align: center;
+        }
+        .score-option-btn:active { background: #475569; transform: scale(0.95); }
+        .score-option-btn.good { border-color: #22c55e; }
+        .score-option-btn.bad { border-color: #ef4444; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body>
+
+    <!-- 登入畫面 -->
+    <div id="loginScreen" class="fixed inset-0 flex flex-col justify-center items-center bg-slate-900 z-50 p-6">
+        <h1 class="text-3xl font-bold mb-2 text-cyan-400">老師專用後台</h1>
+        <p class="text-slate-400 mb-8 text-sm">班級大航海：無盡孤島</p>
+        <input type="password" id="pinInput" placeholder="請輸入 PIN 碼" 
+               class="w-full max-w-xs p-4 text-center text-2xl bg-slate-800 border-2 border-cyan-500 rounded-lg text-white mb-4 focus:outline-none focus:border-yellow-400">
+        <button id="loginBtn" class="w-full max-w-xs p-4 bg-cyan-500 text-black rounded-lg font-bold text-xl">登入</button>
+        <p id="loginError" class="text-red-400 mt-4 hidden">密碼錯誤，請重試</p>
+    </div>
+
+    <!-- 計分主畫面 -->
+    <div id="mainScreen" class="hidden p-4 pb-24">
+        <div class="flex justify-between items-center mb-4">
+            <h1 class="text-xl font-bold text-cyan-400">選擇學生</h1>
+            <button id="logoutBtn" class="text-sm text-slate-400 underline">登出</button>
+        </div>
+        <div class="grid grid-cols-2 gap-2" id="studentListContainer"></div>
+    </div>
+
+    <!-- 動作選擇 Modal -->
+    <div class="modal-overlay" id="actionModal">
+        <div class="modal-content">
+            <div class="text-center mb-4">
+                <h2 class="text-xl font-bold text-white" id="actionStudentName">學生名稱</h2>
+                <p class="text-sm text-slate-400">請選擇獎勵或懲罰</p>
+            </div>
+            <div class="flex gap-2 mb-4">
+                <button class="action-btn btn-good" onclick="showScoreOptions('good')">GOOD<br><span class="text-sm font-normal">加分</span></button>
+                <button class="action-btn btn-bad" onclick="showScoreOptions('bad')">BAD<br><span class="text-sm font-normal">扣分</span></button>
+                <button class="action-btn btn-other" onclick="showScoreOptions('other')">其他<br><span class="text-sm font-normal">自訂</span></button>
+            </div>
+            <button class="w-full p-3 bg-slate-700 rounded-lg font-bold text-slate-300" onclick="closeModal('actionModal')">返回</button>
+        </div>
+    </div>
+
+    <!-- 分數選擇 Modal -->
+    <div class="modal-overlay" id="scoreModal">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-bold text-white" id="scoreStudentName">學生名稱</h2>
+                <button class="text-slate-400 text-2xl" onclick="closeModal('scoreModal')">✕</button>
+            </div>
+            <div id="goodOptions" class="hidden grid grid-cols-3 gap-2">
+                <button class="score-option-btn good" onclick="applyScore(1)">A01<br><span class="text-green-400">+1</span></button>
+                <button class="score-option-btn good" onclick="applyScore(2)">A02<br><span class="text-green-400">+2</span></button>
+                <button class="score-option-btn good" onclick="applyScore(3)">A03<br><span class="text-green-400">+3</span></button>
+            </div>
+            <div id="badOptions" class="hidden grid grid-cols-4 gap-2">
+                <button class="score-option-btn bad" onclick="applyScore(-1)">B01<br><span class="text-red-400">-1</span></button>
+                <button class="score-option-btn bad" onclick="applyScore(-2)">B02<br><span class="text-red-400">-2</span></button>
+                <button class="score-option-btn bad" onclick="applyScore(-3)">B03<br><span class="text-red-400">-3</span></button>
+                <button class="score-option-btn bad" onclick="applyScore(-4)">B04<br><span class="text-red-400">-4</span></button>
+                <button class="score-option-btn bad" onclick="applyScore(-5)">B05<br><span class="text-red-400">-5</span></button>
+                <button class="score-option-btn bad" onclick="applyScore(-6)">B06<br><span class="text-red-400">-6</span></button>
+                <button class="score-option-btn bad" onclick="applyScore(-7)">B07<br><span class="text-red-400">-7</span></button>
+                <button class="score-option-btn bad" onclick="applyScore(-8)">B08<br><span class="text-red-400">-8</span></button>
+            </div>
+            <div id="otherOptions" class="hidden">
+                <div class="flex items-center gap-2 mb-4">
+                    <button onclick="adjustCustomScore(-1)" class="p-4 bg-slate-700 rounded-lg text-2xl font-bold">-</button>
+                    <input type="number" id="customScoreInput" value="0" class="flex-1 p-4 text-center text-2xl bg-slate-800 border border-slate-600 rounded-lg text-white">
+                    <button onclick="adjustCustomScore(1)" class="p-4 bg-slate-700 rounded-lg text-2xl font-bold">+</button>
+                </div>
+                <button onclick="applyCustomScore()" class="w-full p-4 bg-cyan-500 text-black rounded-lg font-bold text-xl">確認送出</button>
+            </div>
+            <button class="w-full mt-4 p-3 bg-slate-700 rounded-lg font-bold text-slate-300" onclick="closeModal('scoreModal')">取消</button>
+        </div>
+    </div>
+
+    <script>
+        // ★★★ 請把這裡改成您的 Apps Script Web App 網址 ★★★
+        const API_URL = 'https://script.google.com/a/macros/ats.edu.hk/s/AKfycbylCeRYjGoQajZ7XZIm6E5zWXxmXDMbegq0lv51Xg1Am0_Mq4TxaCtKZREBYUawn6W2dw/exec';
+
+        const SESSION_KEY = 'castaway_admin_session';
+        const SESSION_DURATION = 20 * 60 * 1000; // 20 分鐘
+
+        let students = [];
+        let currentStudentId = null;
+
+        // ================= Session =================
+        function checkSession() {
+            const session = localStorage.getItem(SESSION_KEY);
+            if (!session) return false;
+            if (Date.now() - parseInt(session) > SESSION_DURATION) {
+                localStorage.removeItem(SESSION_KEY);
+                return false;
+            }
+            return true;
+        }
+        function saveSession() { localStorage.setItem(SESSION_KEY, Date.now().toString()); }
+        function clearSession() { localStorage.removeItem(SESSION_KEY); }
+
+        // ================= 登入 =================
+        const loginScreen = document.getElementById('loginScreen');
+        const mainScreen = document.getElementById('mainScreen');
+        const loginError = document.getElementById('loginError');
+
+        function showMainScreen() {
+            loginScreen.classList.add('hidden');
+            mainScreen.classList.remove('hidden');
+            fetchStudents();
+        }
+
+        document.getElementById('loginBtn').addEventListener('click', () => {
+            const pin = document.getElementById('pinInput').value;
+            if (pin === '2627') {
+                saveSession();
+                showMainScreen();
+            } else {
+                loginError.classList.remove('hidden');
+            }
+        });
+
+        document.getElementById('pinInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') document.getElementById('loginBtn').click();
+        });
+
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            clearSession();
+            location.reload();
+        });
+
+        if (checkSession()) showMainScreen();
+
+        // ================= 抓取資料 =================
+        async function fetchStudents() {
+            try {
+                const response = await fetch(API_URL);
+                students = await response.json();
+                renderStudentList();
+            } catch (err) {
+                console.error('讀取失敗：', err);
+            }
+        }
+
+        function renderStudentList() {
+            const container = document.getElementById('studentListContainer');
+            if (!container) return;
+            container.innerHTML = '';
+            students.forEach(student => {
+                const btn = document.createElement('button');
+                btn.className = 'student-btn';
+                btn.innerHTML = `
+                    <div style="width: 40px; height: 40px; background: #0ea5e9; border-radius: 8px; display: flex; justify-content: center; align-items: center; font-weight: bold; font-size: 1.2rem;">
+                        ${student.id}
+                    </div>
+                    <div style="flex: 1;">
+                        <div style="font-weight: bold; font-size: 1.1rem;">${student.name}</div>
+                        <div style="font-size: 0.8rem; color: #94a3b8;">EXP: ${student.total_exp}</div>
+                    </div>
+                `;
+                btn.onclick = () => selectStudent(student.id);
+                container.appendChild(btn);
+            });
+        }
+
+        // ================= 選擇學生 =================
+        function selectStudent(id) {
+            currentStudentId = id;
+            const student = students.find(s => s.id === id);
+            document.getElementById('actionStudentName').textContent = `${student.id}. ${student.name}`;
+            document.getElementById('actionModal').classList.add('active');
+        }
+
+        window.closeModal = (modalId) => {
+            document.getElementById(modalId).classList.remove('active');
+        };
+
+        window.showScoreOptions = (type) => {
+            const student = students.find(s => s.id === currentStudentId);
+            document.getElementById('scoreStudentName').textContent = `${student.id}. ${student.name}`;
+            document.getElementById('goodOptions').classList.add('hidden');
+            document.getElementById('badOptions').classList.add('hidden');
+            document.getElementById('otherOptions').classList.add('hidden');
+            if (type === 'good') document.getElementById('goodOptions').classList.remove('hidden');
+            else if (type === 'bad') document.getElementById('badOptions').classList.remove('hidden');
+            else {
+                document.getElementById('otherOptions').classList.remove('hidden');
+                document.getElementById('customScoreInput').value = '0';
+            }
+            closeModal('actionModal');
+            document.getElementById('scoreModal').classList.add('active');
+        };
+
+        window.adjustCustomScore = (amount) => {
+            const input = document.getElementById('customScoreInput');
+            let current = parseInt(input.value) || 0;
+            input.value = current + amount;
+        };
+
+        window.applyCustomScore = () => {
+            const score = parseInt(document.getElementById('customScoreInput').value) || 0;
+            if (score === 0) { alert('請輸入不為 0 的分數'); return; }
+            applyScore(score);
+        };
+
+        // ================= 寫入 Google Sheets =================
+        window.applyScore = async (score) => {
+            const student = students.find(s => s.id === currentStudentId);
+            if (!student) return;
+
+            try {
+                await fetch(API_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: student.id, score: score })
+                });
+
+                closeModal('scoreModal');
+                
+                // 等待 1 秒後重新抓取，確保 Google Sheet 已寫入
+                setTimeout(fetchStudents, 1000);
+
+                const actionText = score > 0 ? `+${score}` : `${score}`;
+                alert(`已為 ${student.name} 更新分數：${actionText} 分！`);
+            } catch (err) {
+                alert('寫入失敗，請檢查網路。');
+                console.error(err);
+            }
+        };
+
+        // 點背景關閉 Modal
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) overlay.classList.remove('active');
+            });
+        });
+    </script>
+</body>
+</html>
