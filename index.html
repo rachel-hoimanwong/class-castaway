@@ -192,16 +192,15 @@
             100% { transform: translateY(-20px) scale(1.5); opacity: 0; }
         }
         .lightning {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(255, 255, 255, 0.4);
-            border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
-            opacity: 0;
-            animation: flash 3s infinite;
-            pointer-events: none;
-            z-index: 20;
-        }
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background: rgba(255, 255, 255, 0.4);
+        opacity: 0;
+        animation: flash 3s infinite;
+        pointer-events: none;
+        z-index: 20;
+    }
         @keyframes flash {
             0%, 95%, 100% { opacity: 0; }
             96%, 98% { opacity: 1; }
@@ -524,7 +523,7 @@
         if (student.repair_stage === 1) {
             disasterClass = 'disaster-kraken';
             extraHTML += `<div class="kraken-tentacle" style="top: -20px; left: -20px;">🦑</div>`;
-            extraHTML += `<div class="kraken-tentacle" style="bottom: -20px; right: -20px; transform: scaleX(-1);">🐙</div>`;
+            extraHTML += `<div class="kraken-tentacle" style="bottom: -20px; right: -20px;">🐙</div>`;
         } else if (student.repair_stage === 2) {
             disasterClass = 'disaster-ruin';
             extraHTML += `<div class="repair-warning">🚧 維修中...</div>`;
