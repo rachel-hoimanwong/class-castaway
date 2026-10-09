@@ -169,13 +169,24 @@
             filter: brightness(0.7) grayscale(0.5);
         }
         .disaster-storm .core-building::after {
-            content: '💨';
-            position: absolute;
-            top: -15px;
-            right: -10px;
-            font-size: 1.5rem;
-            animation: smoke 2s infinite;
-        }
+    content: '💨';
+    position: absolute;
+    top: -20px;
+    right: -15px;
+    font-size: 1.8rem;
+    animation: smoke 2s infinite;
+    z-index: 15;
+}
+.disaster-storm .core-building::before {
+    content: '💨';
+    position: absolute;
+    top: -30px;
+    left: -15px;
+    font-size: 1.4rem;
+    animation: smoke 2s infinite 0.5s;
+    z-index: 15;
+    opacity: 0.7;
+}
         @keyframes smoke {
             0% { transform: translateY(0) scale(1); opacity: 0.8; }
             100% { transform: translateY(-20px) scale(1.5); opacity: 0; }
@@ -351,7 +362,22 @@
     .refresh-btn:hover {
         box-shadow: 0 0 30px #00e5ff, 0 0 60px rgba(0, 229, 255, 0.5);
     }
-        
+    /* ================= 雷暴雨的烏雲與颱風 ================= */
+.storm-cloud {
+    position: absolute;
+    font-size: 2rem;
+    z-index: 25;
+    pointer-events: none;
+    animation: cloudFloat 3s ease-in-out infinite;
+    filter: drop-shadow(0 0 8px rgba(0, 0, 0, 0.6));
+}
+
+@keyframes cloudFloat {
+    0%, 100% { transform: translateY(0) translateX(0); }
+    25% { transform: translateY(-5px) translateX(-3px); }
+    50% { transform: translateY(-8px) translateX(3px); }
+    75% { transform: translateY(-5px) translateX(-3px); }
+}    
     </style>
 </head>
 <body>
@@ -497,7 +523,7 @@
 
         if (student.repair_stage === 1) {
             disasterClass = 'disaster-kraken';
-            extraHTML += `<div class="kraken-tentacle" style="top: -20px; left: -20px;">🐙</div>`;
+            extraHTML += `<div class="kraken-tentacle" style="top: -20px; left: -20px;">🦑</div>`;
             extraHTML += `<div class="kraken-tentacle" style="bottom: -20px; right: -20px; transform: scaleX(-1);">🐙</div>`;
         } else if (student.repair_stage === 2) {
             disasterClass = 'disaster-ruin';
@@ -505,9 +531,13 @@
         } else if (student.today_score <= -6) {
             disasterClass = 'disaster-kraken';
         } else if (student.today_score < 0) {
-            disasterClass = 'disaster-storm';
-            extraHTML += `<div class="lightning"></div>`;
-        }
+    disasterClass = 'disaster-storm';
+    extraHTML += `<div class="lightning"></div>`;
+    // ★ 加入烏雲與颱風 emoji
+    extraHTML += `<div class="storm-cloud" style="top: -30px; left: 10%;">☁️</div>`;
+    extraHTML += `<div class="storm-cloud" style="top: -25px; right: 10%;">🌧️</div>`;
+    extraHTML += `<div class="storm-cloud" style="top: -40px; left: 40%; font-size: 2.5rem;">⛈️</div>`;
+}
 
         // ★★★ 新的裝飾物生成規則 ★★★
         let microItemsHTML = '';
