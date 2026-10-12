@@ -1011,8 +1011,13 @@
         //window.addEventListener('load', fetchStudents);\
 // ================= 結算區渲染 =================
 function renderSettlement() {
-    // 1. 最強島主 Top 3
-    const sorted = [...students].sort((a, b) => b.total_exp - a.total_exp);
+   // 1. 最強島主 Top 3（排除 16 號）
+    const EXCLUDED_IDS = ['16']; // ★ 不想參與排名的座號
+    
+    const sorted = [...students]
+        .filter(s => !EXCLUDED_IDS.includes(s.id))  // ★ 排除 16 號
+        .sort((a, b) => b.total_exp - a.total_exp);
+    
     const top3 = sorted.slice(0, 3);
 
     const podiumGrid = document.getElementById('podiumGrid');
@@ -1043,7 +1048,9 @@ function renderSettlement() {
     // 2. 沉沒之島（total_exp < 0，但因為 total_exp 最低為 0，所以改用 today_score < 0 或 repair_stage > 0）
     // 根據您的需求：沉沒標準是「最後結算完的總分為負分」
     // 因為 total_exp 不會為負，所以我們用 today_score < 0 或 repair_stage > 0 來判斷
-    const sunken = students.filter(s => s.today_score < 0 || s.repair_stage > 0);
+   const sunken = students
+    .filter(s => !EXCLUDED_IDS.includes(s.id))  // ★ 排除 16 號
+    .filter(s => s.today_score < 0 || s.repair_stage > 0);
 
     const sunkenGrid = document.getElementById('sunkenGrid');
     sunkenGrid.innerHTML = '';
