@@ -377,6 +377,342 @@
     50% { transform: translateY(-8px) translateX(3px); }
     75% { transform: translateY(-5px) translateX(-3px); }
 }    
+
+/* ================= 結算區 ================= */
+.settlement-section {
+    max-width: 1200px;
+    margin: 60px auto;
+    padding: 20px;
+}
+
+.settlement-title {
+    text-align: center;
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: #ffee00;
+    text-shadow: 0 0 20px #ffee00, 0 0 40px #ffee00;
+    margin-bottom: 40px;
+    letter-spacing: 5px;
+    animation: neonCyberpunk 3s infinite alternate;
+}
+
+.podium-title, .sunken-title {
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: #00e5ff;
+    text-shadow: 0 0 10px rgba(0, 229, 255, 0.8);
+    margin-bottom: 20px;
+}
+
+/* 最強島主 Top 3 */
+.podium-grid {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 20px;
+    margin-bottom: 50px;
+    flex-wrap: wrap;
+}
+
+.podium-card {
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    border: 2px solid #ffee00;
+    border-radius: 16px;
+    padding: 20px;
+    text-align: center;
+    min-width: 150px;
+    box-shadow: 0 0 20px rgba(255, 238, 0, 0.5);
+    position: relative;
+}
+
+.podium-card.rank-1 {
+    border-color: #ffd700;
+    box-shadow: 0 0 30px rgba(255, 215, 0, 0.8);
+    transform: scale(1.15);
+    z-index: 3;
+}
+
+.podium-card.rank-2 {
+    border-color: #c0c0c0;
+    box-shadow: 0 0 20px rgba(192, 192, 192, 0.6);
+    z-index: 2;
+}
+
+.podium-card.rank-3 {
+    border-color: #cd7f32;
+    box-shadow: 0 0 20px rgba(205, 127, 50, 0.6);
+    z-index: 1;
+}
+
+.podium-crown {
+    font-size: 3rem;
+    margin-bottom: 10px;
+}
+
+.podium-name {
+    font-size: 1.2rem;
+    font-weight: 900;
+    color: #fff;
+    margin-bottom: 5px;
+}
+
+.podium-exp {
+    font-size: 1rem;
+    color: #ffee00;
+    font-weight: bold;
+}
+
+.podium-rank {
+    font-size: 0.8rem;
+    color: #94a3b8;
+    margin-top: 5px;
+}
+
+/* 沉沒之島 */
+.sunken-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 15px;
+}
+
+.sunken-card {
+    background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+    border: 2px solid #ef4444;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    animation: sinkAnimation 3s ease-in-out infinite alternate;
+}
+
+@keyframes sinkAnimation {
+    0% { transform: translateY(0); box-shadow: 0 0 10px rgba(239, 68, 68, 0.5); }
+    100% { transform: translateY(8px); box-shadow: 0 0 25px rgba(239, 68, 68, 0.8); }
+}
+
+.sunken-card::before {
+    content: '🌊';
+    position: absolute;
+    top: -20px;
+    left: 0;
+    right: 0;
+    font-size: 2rem;
+    opacity: 0.5;
+    animation: waveMove 3s linear infinite;
+}
+
+.sunken-name {
+    font-size: 1.1rem;
+    font-weight: 900;
+    color: #fff;
+    margin-bottom: 5px;
+    position: relative;
+    z-index: 2;
+}
+
+.sunken-score {
+    font-size: 0.9rem;
+    color: #ef4444;
+    font-weight: bold;
+    position: relative;
+    z-index: 2;
+}
+
+.sunken-hint {
+    font-size: 0.7rem;
+    color: #94a3b8;
+    margin-top: 8px;
+    position: relative;
+    z-index: 2;
+}
+
+/* ================= 終極大寶藏 Modal ================= */
+.treasure-modal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.95);
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.treasure-modal.active {
+    display: flex;
+}
+
+.treasure-content {
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    border: 3px solid #ffd700;
+    border-radius: 20px;
+    padding: 30px;
+    max-width: 600px;
+    width: 100%;
+    box-shadow: 0 0 50px rgba(255, 215, 0, 0.6);
+    text-align: center;
+    animation: popIn 0.5s ease-out;
+}
+
+@keyframes popIn {
+    0% { transform: scale(0.5); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.treasure-title {
+    font-size: 2rem;
+    font-weight: 900;
+    color: #ffd700;
+    text-shadow: 0 0 20px #ffd700;
+    margin-bottom: 10px;
+}
+
+.treasure-student {
+    font-size: 1.2rem;
+    color: #fff;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+.punishment-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin-bottom: 20px;
+    max-height: 300px;
+    overflow-y: auto;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+}
+
+.punishment-item {
+    font-size: 0.8rem;
+    color: #cbd5e1;
+    padding: 6px 8px;
+    background: rgba(30, 41, 59, 0.8);
+    border-radius: 6px;
+    text-align: left;
+    border: 1px solid #334155;
+}
+
+.punishment-item.locked {
+    opacity: 0.3;
+    text-decoration: line-through;
+}
+
+.open-treasure-btn {
+    font-size: 1.5rem;
+    font-weight: 900;
+    padding: 20px 40px;
+    background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+    color: #000;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    box-shadow: 0 0 30px #ffd700;
+    transition: transform 0.2s;
+    font-family: 'Noto Sans TC', sans-serif;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); box-shadow: 0 0 30px #ffd700; }
+    50% { transform: scale(1.05); box-shadow: 0 0 50px #ffd700; }
+}
+
+.open-treasure-btn:active {
+    transform: scale(0.95);
+}
+
+.treasure-result {
+    margin-top: 20px;
+}
+
+.treasure-box {
+    font-size: 6rem;
+    animation: shakeBox 0.5s infinite;
+    cursor: pointer;
+}
+
+@keyframes shakeBox {
+    0%, 100% { transform: rotate(-5deg) scale(1); }
+    50% { transform: rotate(5deg) scale(1.1); }
+}
+
+.treasure-box.opened {
+    animation: openBox 0.8s ease-out forwards;
+}
+
+@keyframes openBox {
+    0% { transform: scale(1) rotate(0deg); }
+    50% { transform: scale(1.5) rotate(10deg); }
+    100% { transform: scale(2) rotate(0deg); opacity: 0; }
+}
+
+.treasure-prize {
+    font-size: 1.3rem;
+    font-weight: 900;
+    color: #ffd700;
+    margin-top: 20px;
+    padding: 20px;
+    background: rgba(255, 215, 0, 0.1);
+    border: 2px solid #ffd700;
+    border-radius: 12px;
+    animation: popIn 0.5s ease-out;
+    line-height: 1.6;
+}
+
+.close-treasure-btn {
+    margin-top: 20px;
+    padding: 12px 30px;
+    background: #334155;
+    color: #cbd5e1;
+    border: none;
+    border-radius: 25px;
+    font-size: 1rem;
+    cursor: pointer;
+    font-family: 'Noto Sans TC', sans-serif;
+}
+
+.close-treasure-btn:active {
+    background: #475569;
+}
+
+/* 手機版 */
+@media (max-width: 600px) {
+    .settlement-title {
+        font-size: 1.8rem;
+    }
+    .podium-card {
+        min-width: 100px;
+        padding: 12px;
+    }
+    .podium-crown {
+        font-size: 2rem;
+    }
+    .podium-name {
+        font-size: 0.9rem;
+    }
+    .podium-card.rank-1 {
+        transform: scale(1.08);
+    }
+    .punishment-list {
+        grid-template-columns: 1fr;
+    }
+    .treasure-title {
+        font-size: 1.5rem;
+    }
+    .open-treasure-btn {
+        font-size: 1.2rem;
+        padding: 15px 30px;
+    }
+}
     </style>
 </head>
 <body>
@@ -438,6 +774,55 @@
 </div>
 
 <div class="archipelago" id="archipelago"></div>
+    
+    <!-- ★★★ 結算區 ★★★ -->
+<section class="settlement-section">
+    <h2 class="settlement-title">🏁 本週結算 🏁</h2>
+
+    <!-- 最強島主 Top 3 -->
+    <div class="podium-section">
+        <h3 class="podium-title">👑 最強島主 👑</h3>
+        <div class="podium-grid" id="podiumGrid">
+            <!-- JavaScript 動態生成 -->
+        </div>
+    </div>
+
+    <!-- 沉沒之島 -->
+    <div class="sunken-section">
+        <h3 class="sunken-title">🌊 沉沒之島 🌊</h3>
+        <div class="sunken-grid" id="sunkenGrid">
+            <!-- JavaScript 動態生成 -->
+        </div>
+    </div>
+</section>
+
+<!-- ★★★ 終極大寶藏 Modal ★★★ -->
+<div class="treasure-modal" id="treasureModal">
+    <div class="treasure-content">
+        <h2 class="treasure-title">🎁 終極大寶藏 🎁</h2>
+        <p class="treasure-student" id="treasureStudentName">學生名稱</p>
+        
+        <!-- 懲罰清單 -->
+        <div class="punishment-list" id="punishmentList">
+            <!-- JavaScript 動態生成 -->
+        </div>
+        
+        <!-- 開獎按鈕 -->
+        <button class="open-treasure-btn" id="openTreasureBtn" onclick="openTreasure()">
+            🎁 開獎 🎁
+        </button>
+        
+        <!-- 寶箱動畫區 -->
+        <div class="treasure-result" id="treasureResult" style="display: none;">
+            <div class="treasure-box" id="treasureBox">🎁</div>
+            <div class="treasure-prize" id="treasurePrize"></div>
+        </div>
+        
+        <!-- 關閉按鈕 -->
+        <button class="close-treasure-btn" onclick="closeTreasure()">關閉</button>
+    </div>
+</div>
+        
     <!-- ★★★ 手動更新按鈕插在這裡 ★★★ -->
         <button onclick="fetchStudents()" class="refresh-btn">🔄 更新</button>
 </div>
@@ -615,14 +1000,227 @@
                 const data = await response.json();
                 students = data;
                 renderOcean();
+                renderSettlement(); // ★ 新增這行
             } catch (err) {
                 console.error('讀取資料失敗：', err);
-            }
+    }
         }
 
         // 每 10 秒更新一次
         //setInterval(fetchStudents, 10000);
         //window.addEventListener('load', fetchStudents);\
+// ================= 結算區渲染 =================
+function renderSettlement() {
+    // 1. 最強島主 Top 3
+    const sorted = [...students].sort((a, b) => b.total_exp - a.total_exp);
+    const top3 = sorted.slice(0, 3);
+
+    const podiumGrid = document.getElementById('podiumGrid');
+    podiumGrid.innerHTML = '';
+
+    const crowns = ['👑👑👑', '👑👑', '👑'];
+    const rankNames = ['第 1 名', '第 2 名', '第 3 名'];
+
+    top3.forEach((student, index) => {
+        if (student.total_exp <= 0) return; // 0 分不顯示
+
+        const card = document.createElement('div');
+        card.className = `podium-card rank-${index + 1}`;
+        card.innerHTML = `
+            <div class="podium-crown">${crowns[index]}</div>
+            <div class="podium-name">${student.id}. ${student.name}</div>
+            <div class="podium-exp">${student.total_exp} EXP</div>
+            <div class="podium-rank">${rankNames[index]}</div>
+        `;
+        podiumGrid.appendChild(card);
+    });
+
+    // 如果沒有 Top 3（全部 0 分）
+    if (podiumGrid.children.length === 0) {
+        podiumGrid.innerHTML = '<p style="color: #94a3b8; text-align: center;">本週暫無島主</p>';
+    }
+
+    // 2. 沉沒之島（total_exp < 0，但因為 total_exp 最低為 0，所以改用 today_score < 0 或 repair_stage > 0）
+    // 根據您的需求：沉沒標準是「最後結算完的總分為負分」
+    // 因為 total_exp 不會為負，所以我們用 today_score < 0 或 repair_stage > 0 來判斷
+    const sunken = students.filter(s => s.today_score < 0 || s.repair_stage > 0);
+
+    const sunkenGrid = document.getElementById('sunkenGrid');
+    sunkenGrid.innerHTML = '';
+
+    if (sunken.length === 0) {
+        sunkenGrid.innerHTML = '<p style="color: #22c55e; text-align: center; grid-column: 1 / -1;">🎉 本週沒有島嶼沉沒，全班表現優秀！</p>';
+    } else {
+        sunken.forEach(student => {
+            const card = document.createElement('div');
+            card.className = 'sunken-card';
+            card.onclick = () => openTreasureModal(student);
+            card.innerHTML = `
+                <div class="sunken-name">${student.id}. ${student.name}</div>
+                <div class="sunken-score">今日：${student.today_score} 分</div>
+                <div class="sunken-hint">點擊開啟寶藏 🎁</div>
+            `;
+            sunkenGrid.appendChild(card);
+        });
+    }
+}
+
+// ================= 終極大寶藏 =================
+let currentTreasureStudent = null;
+
+function openTreasureModal(student) {
+    currentTreasureStudent = student;
+    document.getElementById('treasureStudentName').textContent = `${student.id}. ${student.name}`;
+    
+    // 重置狀態
+    document.getElementById('treasureResult').style.display = 'none';
+    document.getElementById('openTreasureBtn').style.display = 'block';
+    document.getElementById('treasureBox').className = 'treasure-box';
+    document.getElementById('treasurePrize').innerHTML = '';
+    
+    // 渲染懲罰清單（根據分數決定哪些顯示、哪些鎖定）
+    renderPunishmentList(student.today_score);
+    
+    // 顯示 Modal
+    document.getElementById('treasureModal').classList.add('active');
+}
+
+function renderPunishmentList(score) {
+    const absScore = Math.abs(score);
+    const list = document.getElementById('punishmentList');
+    list.innerHTML = '';
+
+    const punishments = [
+        { id: 1, text: '20 下掌上壓 🧎🏻‍➡️', unlock: 0 },
+        { id: 2, text: '20 下波比跳 🕴🏻', unlock: 0 },
+        { id: 3, text: '清潔班房的地板和黑板 🧹', unlock: 0 },
+        { id: 4, text: '清潔樓層的地板和自己班房黑板 🧹', unlock: 0 },
+        { id: 5, text: '罰抄學生約章一次 📜', unlock: 10 },
+        { id: 6, text: '罰抄學生約章二次 📜📜', unlock: 10 },
+        { id: 7, text: '罰抄學生約章三次 📜📜📜', unlock: 15 },
+        { id: 8, text: '罰抄校規一次 📓', unlock: 10 },
+        { id: 9, text: '放學過隔離 T34 室休息半個鐘 🤡', unlock: 10 },
+        { id: 10, text: '放學過隔離 T34 室休息 45 分鐘 🤡', unlock: 15 },
+        { id: 11, text: '耶穌愛您，豁免一次 🙏', unlock: 0 },
+        { id: 12, text: '在班上唱一首歌 🎤', unlock: 0 },
+        { id: 13, text: '在班上跳一隻舞 🕺🏼', unlock: 0 },
+        { id: 14, text: '讀一篇文章 🗣️', unlock: 0 },
+    ];
+
+    punishments.forEach(p => {
+        const item = document.createElement('div');
+        const isUnlocked = absScore >= p.unlock;
+        item.className = `punishment-item ${isUnlocked ? '' : 'locked'}`;
+        item.textContent = p.text;
+        list.appendChild(item);
+    });
+}
+
+function openTreasure() {
+    if (!currentTreasureStudent) return;
+
+    const box = document.getElementById('treasureBox');
+    const prize = document.getElementById('treasurePrize');
+    const btn = document.getElementById('openTreasureBtn');
+    const result = document.getElementById('treasureResult');
+
+    // 顯示結果區
+    result.style.display = 'block';
+    btn.style.display = 'none';
+
+    // 播放寶箱動畫
+    box.classList.add('opened');
+
+    // 延遲一下再顯示獎品（等動畫播完）
+    setTimeout(() => {
+        const punishmentId = drawPunishment(currentTreasureStudent.today_score);
+        const punishment = getPunishmentText(punishmentId);
+        prize.innerHTML = `🎉 恭喜抽中！<br><span style="font-size: 1.8rem;">${punishment}</span>`;
+    }, 800);
+}
+
+function drawPunishment(score) {
+    const absScore = Math.abs(score);
+    
+    // 基礎池（永遠存在）
+    let pool = [
+        { id: 1, weight: 25 },
+        { id: 2, weight: 25 },
+        { id: 3, weight: 20 },
+        { id: 4, weight: 20 },
+        { id: 11, weight: 1 },  // 永遠最低
+        { id: 12, weight: 20 },
+        { id: 13, weight: 20 },
+        { id: 14, weight: 25 },
+    ];
+    
+    // -10 分解鎖 5, 6, 8, 9
+    if (absScore >= 10) {
+        pool.push(
+            { id: 5, weight: 12 },
+            { id: 6, weight: 8 },
+            { id: 8, weight: 10 },
+            { id: 9, weight: 11 },
+        );
+    }
+    
+    // -15 分解鎖 7, 10（機率高過 1-4）
+    if (absScore >= 15) {
+        pool.push(
+            { id: 7, weight: 26 },
+            { id: 10, weight: 26 },
+        );
+    }
+    
+    // 加權隨機
+    const total = pool.reduce((sum, p) => sum + p.weight, 0);
+    let rand = Math.random() * total;
+    for (const p of pool) {
+        rand -= p.weight;
+        if (rand <= 0) return p.id;
+    }
+    return pool[0].id;
+}
+
+function getPunishmentText(id) {
+    const punishments = {
+        1: '20 下掌上壓 🧎🏻‍➡️',
+        2: '20 下波比跳 🕴🏻',
+        3: '清潔班房的地板和黑板 🧹',
+        4: '清潔樓層的地板和自己班房黑板 🧹',
+        5: '罰抄學生約章一次 📜',
+        6: '罰抄學生約章二次 📜📜',
+        7: '罰抄學生約章三次 📜📜📜',
+        8: '罰抄校規一次 📓',
+        9: '放學過隔離 T34 室休息半個鐘 🤡',
+        10: '放學過隔離 T34 室休息 45 分鐘 🤡',
+        11: '耶穌愛您，豁免一次 🙏',
+        12: '在班上唱一首歌 🎤',
+        13: '在班上跳一隻舞 🕺🏼',
+        14: '讀一篇文章 🗣️',
+    };
+    return punishments[id] || '未知懲罰';
+}
+
+function closeTreasure() {
+    document.getElementById('treasureModal').classList.remove('active');
+    currentTreasureStudent = null;
+}
+
+// ================= 修改 fetchStudents，讓它同時渲染結算區 =================
+// 找到原本的 fetchStudents，改成：
+async function fetchStudents() {
+    try {
+        const response = await fetch(API_URL);
+        const data = await response.json();
+        students = data;
+        renderOcean();
+        renderSettlement(); // ★ 新增這行
+    } catch (err) {
+        console.error('讀取資料失敗：', err);
+    }
+}
+        
         
         // 只在頁面載入時抓一次，之後手動按按鈕更新
         window.addEventListener('load', fetchStudents);
