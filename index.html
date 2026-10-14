@@ -1101,17 +1101,20 @@ function renderPunishmentList(score) {
         { id: 1, text: '20 下掌上壓 🧎🏻‍➡️', unlock: 0 },
         { id: 2, text: '20 下波比跳 🕴🏻', unlock: 0 },
         { id: 3, text: '清潔班房的地板和黑板 🧹', unlock: 0 },
-        { id: 4, text: '清潔樓層的地板和自己班房黑板 🧹', unlock: 0 },
+        { id: 4, text: '清潔樓層的地板和自己班房嘅𥦬 🧹🪟', unlock: 0 },
         { id: 5, text: '罰抄學生約章一次 📜', unlock: 10 },
         { id: 6, text: '罰抄學生約章二次 📜📜', unlock: 10 },
         { id: 7, text: '罰抄學生約章三次 📜📜📜', unlock: 15 },
-        { id: 8, text: '罰抄校規一次 📓', unlock: 10 },
+        { id: 8, text: '抄寫鮑思高神父生平簡介 📓', unlock: 10 },
         { id: 9, text: '放學過隔離 T34 室休息半個鐘 🤡', unlock: 10 },
         { id: 10, text: '放學過隔離 T34 室休息 45 分鐘 🤡', unlock: 15 },
         { id: 11, text: '耶穌愛您，豁免一次 🙏', unlock: 0 },
         { id: 12, text: '在班上唱一首歌 🎤', unlock: 0 },
         { id: 13, text: '在班上跳一隻舞 🕺🏼', unlock: 0 },
         { id: 14, text: '讀一篇文章 🗣️', unlock: 0 },
+        { id: 15, text: '繪畫校徽兩個🖍️🖍️', unlock: 0 },
+        { id: 16, text: '帶領祈禱一次（聖三光榮經）🙏🏻', unlock: 0 },
+        { id: 17, text: '做一條數學題 但唔用計數機📵', unlock: 0 },
     ];
 
     punishments.forEach(p => {
@@ -1155,10 +1158,13 @@ function drawPunishment(score) {
         { id: 2, weight: 25 },
         { id: 3, weight: 20 },
         { id: 4, weight: 20 },
-        { id: 11, weight: 1 },  // 永遠最低
+        { id: 11, weight: 0.1 },  // 永遠最低
         { id: 12, weight: 20 },
         { id: 13, weight: 20 },
         { id: 14, weight: 25 },
+        { id: 15, weight: 25 },
+        { id: 16, weight: 25 },
+        { id: 17, weight: 25 },
     ];
     
     // -10 分解鎖 5, 6, 8, 9
@@ -1205,6 +1211,9 @@ function getPunishmentText(id) {
         12: '在班上唱一首歌 🎤',
         13: '在班上跳一隻舞 🕺🏼',
         14: '讀一篇文章 🗣️',
+        15: '繪畫校徽兩個🖍️🖍️',
+        16: '帶領祈禱一次（聖三光榮經）🙏🏻',
+        17: '做一條數學題 但唔用計數機📵',
     };
     return punishments[id] || '未知懲罰';
 }
