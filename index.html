@@ -1102,12 +1102,12 @@ function renderPunishmentList(score) {
         { id: 2, text: '20 下波比跳 🕴🏻', unlock: 0 },
         { id: 3, text: '清潔班房的地板和黑板 🧹', unlock: 0 },
         { id: 4, text: '清潔樓層的地板和自己班房嘅𥦬 🧹🪟', unlock: 0 },
-        { id: 5, text: '罰抄學生約章一次 📜', unlock: 10 },
-        { id: 6, text: '罰抄學生約章二次 📜📜', unlock: 10 },
-        { id: 7, text: '罰抄學生約章三次 📜📜📜', unlock: 15 },
-        { id: 8, text: '抄寫鮑思高神父生平簡介 📓', unlock: 10 },
-        { id: 9, text: '放學過隔離 T34 室休息半個鐘 🤡', unlock: 10 },
-        { id: 10, text: '放學過隔離 T34 室休息 45 分鐘 🤡', unlock: 15 },
+        { id: 5, text: '罰抄學生約章一次 📜', unlock: 0 },
+        { id: 6, text: '下星期二四沒有小息和午息', unlock: 6 },
+        { id: 7, text: '下星期一三五沒有小息和午息', unlock: 8 },
+        { id: 8, text: '抄寫鮑思高神父生平簡介 📓', unlock: 8 },
+        { id: 9, text: '放學過隔離 T34 室休息半個鐘 🤡', unlock: 6 },
+        { id: 10, text: '放學過隔離 T34 室休息 45 分鐘 🤡', unlock: 8 },
         { id: 11, text: '耶穌愛您，豁免一次 🙏', unlock: 0 },
         { id: 12, text: '在班上唱一首歌 🎤', unlock: 0 },
         { id: 13, text: '在班上跳一隻舞 🕺🏼', unlock: 0 },
@@ -1168,7 +1168,7 @@ function drawPunishment(score) {
     ];
     
     // -10 分解鎖 5, 6, 8, 9
-    if (absScore >= 10) {
+    if (absScore >= 6) {
         pool.push(
             { id: 5, weight: 12 },
             { id: 6, weight: 8 },
@@ -1178,7 +1178,7 @@ function drawPunishment(score) {
     }
     
     // -15 分解鎖 7, 10（機率高過 1-4）
-    if (absScore >= 15) {
+    if (absScore >= 8) {
         pool.push(
             { id: 7, weight: 26 },
             { id: 10, weight: 26 },
@@ -1202,8 +1202,8 @@ function getPunishmentText(id) {
         3: '清潔班房的地板和黑板 🧹',
         4: '清潔樓層的地板和自己班房黑板 🧹',
         5: '罰抄學生約章一次 📜',
-        6: '罰抄學生約章二次 📜📜',
-        7: '罰抄學生約章三次 📜📜📜',
+        6: '下星期二四沒有小息和午息',
+        7: '下星期一三五沒有小息和午息',
         8: '罰抄校規一次 📓',
         9: '放學過隔離 T34 室休息半個鐘 🤡',
         10: '放學過隔離 T34 室休息 45 分鐘 🤡',
