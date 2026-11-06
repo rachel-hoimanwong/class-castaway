@@ -114,7 +114,7 @@
             z-index: 2;
         }
         .core-building {
-            font-size: 3rem;
+            font-size: 6rem;
             position: absolute;
             top: 50%;
             left: 50%;
@@ -126,7 +126,7 @@
         /* 學生資訊 (顯示在建築物下方) */
         .student-info {
             position: absolute;
-            top: 65%;
+            top: 75%;
             left: 50%;
             transform: translateX(-50%);
             text-align: center;
@@ -832,12 +832,12 @@
         const API_URL = 'https://script.google.com/macros/s/AKfycbylCeRYjGoQajZ7XZIm6E5zWXxmXDMbegq0lv51Xg1Am0_Mq4TxaCtKZREBYUawn6W2dw/exec';
 
         const LEVELS = [
-            { level: 0, name: '荒蕪', maxExp: 0, size: 20, building: '🪨' },
-            { level: 1, name: '荒島', maxExp: 20, size: 45, building: '⛺' },
-            { level: 2, name: '營地', maxExp: 45, size: 70, building: '🏕️' },
-            { level: 3, name: '部落', maxExp: 90, size: 95, building: '🏰' },
-            { level: 4, name: '城鎮', maxExp: 150, size: 120, building: '🏙️' },
-            { level: 5, name: '帝國', maxExp: Infinity, size: 145, building: '🌆' }
+            { level: 0, name: '荒蕪', maxExp: 0, size: 40, building: '🪨' },
+            { level: 1, name: '荒島', maxExp: 20, size: 80, building: '⛺' },
+            { level: 2, name: '營地', maxExp: 45, size: 120, building: '🏕️' },
+            { level: 3, name: '部落', maxExp: 90, size: 160, building: '🏰' },
+            { level: 4, name: '城鎮', maxExp: 150, size: 200, building: '🏙️' },
+            { level: 5, name: '帝國', maxExp: Infinity, size: 240, building: '🌆' }
         ];
 
         let students = [];
