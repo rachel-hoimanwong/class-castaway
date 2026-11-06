@@ -1050,7 +1050,7 @@ function renderSettlement() {
     // 因為 total_exp 不會為負，所以我們用 today_score < 0 或 repair_stage > 0 來判斷
    const sunken = students
     .filter(s => !EXCLUDED_IDS.includes(s.id))  // ★ 排除 16 號
-    .filter(s => s.today_score < 0 || s.repair_stage > 0);
+    .filter(s => s.weekly_score < 0);
 
     const sunkenGrid = document.getElementById('sunkenGrid');
     sunkenGrid.innerHTML = '';
@@ -1064,7 +1064,7 @@ function renderSettlement() {
             card.onclick = () => openTreasureModal(student);
             card.innerHTML = `
                 <div class="sunken-name">${student.id}. ${student.name}</div>
-                <div class="sunken-score">今日：${student.today_score} 分</div>
+                <div class="sunken-score">本週：${student.weekly_score} 分</div>
                 <div class="sunken-hint">點擊開啟寶藏 🎁</div>
             `;
             sunkenGrid.appendChild(card);
@@ -1086,7 +1086,7 @@ function openTreasureModal(student) {
     document.getElementById('treasurePrize').innerHTML = '';
     
     // 渲染懲罰清單（根據分數決定哪些顯示、哪些鎖定）
-    renderPunishmentList(student.today_score);
+    renderPunishmentList(student.weekly_score);
     
     // 顯示 Modal
     document.getElementById('treasureModal').classList.add('active');
@@ -1143,7 +1143,7 @@ function openTreasure() {
 
     // 延遲一下再顯示獎品（等動畫播完）
     setTimeout(() => {
-        const punishmentId = drawPunishment(currentTreasureStudent.today_score);
+        const punishmentId = drawPunishment(currentTreasureStudent.weekly_score);
         const punishment = getPunishmentText(punishmentId);
         prize.innerHTML = `🎉 恭喜抽中！<br><span style="font-size: 1.8rem;">${punishment}</span>`;
     }, 800);
