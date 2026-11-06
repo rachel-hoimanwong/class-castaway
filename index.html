@@ -72,7 +72,7 @@
         .archipelago {
             position: relative;
             width: 100%;
-            min-height: 160vh; /* 大幅加高，容納不規則散落的島嶼 */
+            min-height: 180vh; /* 大幅加高，讓島嶼有足夠空間上下散落 */
             padding: 40px 10px;
         }
         .island {
@@ -806,64 +806,42 @@
             const containerWidth = container.clientWidth;
             const isMobile = window.innerWidth < 600;
 
-            // ★★★ 關鍵 1：決定基礎排版（行與列） ★★★
-            // 手機：基礎 2 列，但我們會讓它交錯；平板/電腦：3 或 4 列
-            let baseCols;
-            if (isMobile) {
-                baseCols = 2; // 手機基礎 2 個，但會用邏輯讓部分行變 3 個
-            } else if (window.innerWidth < 800) {
-                baseCols = 3;
-            } else {
-                baseCols = 4;
-            }
-
-            // 計算總行數（粗略估計）
-            const totalRows = Math.ceil(students.length / baseCols);
-            
-            // ★★★ 關鍵 2：設定島嶼最大尺寸 ★★★
-            let maxAllowedSize;
-            if (isMobile) {
-                // 電話版：因為一行 2 個，寬度很夠，我們把上限放大到 150 (比之前大 50%)
-                maxAllowedSize = (containerWidth / 2) - 20; 
-                // 但如果算出來超過 160，就鎖在 160 避免太大
-                maxAllowedSize = Math.min(maxAllowedSize, 160);
-            } else {
-                // 平板/電腦版：維持原本的邏輯，上限 260
-                maxAllowedSize = Math.min((containerWidth / baseCols) - 20, 260);
-            }
-
-            // ★★★ 關鍵 3：手機版專用的「不規則交錯」邏輯 ★★★
-            // 我們手動分配每一行的島嶼數量：2, 3, 2, 3... 這樣交錯
-            let rowAssignments = []; // 記錄每一行有幾個島
+            // 計算每一行要放幾個島
+            let rowAssignments = [];
             let remaining = students.length;
             let toggle = 0;
             while (remaining > 0) {
-                let count = (toggle % 2 === 0) ? 2 : 3; // 2, 3, 2, 3 交替
+                let count;
+                if (isMobile) {
+                    // ★ 手機版：嚴格執行 2, 3, 2, 3... 的交錯，打破整齊感
+                    count = (toggle % 2 === 0) ? 2 : 3;
+                } else {
+                    // 平板/電腦版：固定一行 3 或 4 個
+                    count = (window.innerWidth < 800) ? 3 : 4;
+                }
+                
                 if (remaining < count) count = remaining;
                 rowAssignments.push(count);
                 remaining -= count;
                 toggle++;
             }
 
-            // 如果不是手機，就用傳統的固定列數
-            if (!isMobile) {
-                rowAssignments = [];
-                for (let i = 0; i < totalRows; i++) {
-                    rowAssignments.push(baseCols);
-                }
-            }
-
-            // 重新計算總高度，因為手機的交錯會讓行數變多
             const actualRows = rowAssignments.length;
             
-            // 手機版的高度需要特別處理，因為我們要讓它上下起伏
-            const rowHeight = isMobile ? 180 : (container.clientHeight / actualRows);
-            
+            // 計算島嶼的最大尺寸
+            let maxAllowedSize;
+            if (isMobile) {
+                // ★ 電話版：因為一行最多 3 個，寬度空間很夠，把上限放大到 130，確保 LV0 也有 65px 以上
+                maxAllowedSize = (containerWidth / 2.2); 
+                maxAllowedSize = Math.min(maxAllowedSize, 140); // 鎖在 140 避免過大
+            } else {
+                maxAllowedSize = Math.min((containerWidth / 4) - 20, 260);
+            }
+
             let currentIndex = 0;
 
             rowAssignments.forEach((count, rowIndex) => {
-                // 計算這一行的基礎 Y 座標（由下往上）
-                // 如果是手機，我們讓 Y 座標有更大的起伏
+                // 基礎 Y 座標（平均分佈在容器高度內）
                 const baseY = container.clientHeight - ((rowIndex + 0.5) * (container.clientHeight / actualRows));
                 
                 for (let i = 0; i < count; i++) {
@@ -873,19 +851,24 @@
                     
                     const scaleRatio = levelInfo.size / 300; 
                     let landSize = maxAllowedSize * scaleRatio;
-                    landSize = Math.max(landSize, isMobile ? 60 : 50); // 手機最小 60，平板 50
+                    // ★ 電話版最小尺寸設為 65px，讓 LV0 也有足夠存在感
+                    landSize = Math.max(landSize, isMobile ? 65 : 50); 
 
-                    // 計算 X 座標：將這一行的島嶼均勻分佈
+                    // X 座標：將島嶼平均分佈在這一行的寬度內
                     const baseX = (containerWidth / (count + 1)) * (i + 1);
                     
-                    // 加上水平偏移，讓它不要對齊
-                    const offsetX = (Math.random() - 0.5) * (containerWidth / count) * 0.4;
+                    // ★ 水平偏移：加大一點，讓它不要像排隊
+                    const offsetX = (Math.random() - 0.5) * (containerWidth / count) * 0.5;
 
-                    // ★★★ 關鍵 4：垂直不規則偏移 ★★★
-                    // 這是讓島嶼「上下起伏」的關鍵
-                    // 手機版給予更大的 Y 軸偏移 (0.6 倍行高)，讓它看起來很散落
-                    const yOffsetRange = isMobile ? 80 : (container.clientHeight / actualRows) * 0.3;
-                    const offsetY = (Math.random() - 0.5) * yOffsetRange * 2; 
+                    // ★★★ 核心改動：大幅度的垂直偏移 ★★★
+                    // 讓島嶼上下亂跳，這是打破 iPhone 整齊感的關鍵
+                    let offsetY;
+                    if (isMobile) {
+                        // 電話版：允許上下偏移 100px！
+                        offsetY = (Math.random() - 0.5) * 100; 
+                    } else {
+                        offsetY = (Math.random() - 0.5) * 60;
+                    }
 
                     const posX = baseX + offsetX;
                     const posY = baseY + offsetY;
