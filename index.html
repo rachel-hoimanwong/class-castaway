@@ -72,7 +72,7 @@
         .archipelago {
             position: relative;
             width: 100%;
-            min-height: 130vh; /* 加高以容納更大的島 */
+            min-height: 160vh; /* 大幅加高，容納不規則散落的島嶼 */
             padding: 40px 10px;
         }
         .island {
@@ -804,138 +804,182 @@
             students.forEach(s => { if (s.total_exp > maxExp) maxExp = s.total_exp; });
 
             const containerWidth = container.clientWidth;
-            
-            // ★★★ 關鍵 1：根據屏幕寬度決定「一行顯示幾個島」 ★★★
-            let cols;
-            if (window.innerWidth < 600) {
-                cols = 2; // 手機：一行 2 個
+            const isMobile = window.innerWidth < 600;
+
+            // ★★★ 關鍵 1：決定基礎排版（行與列） ★★★
+            // 手機：基礎 2 列，但我們會讓它交錯；平板/電腦：3 或 4 列
+            let baseCols;
+            if (isMobile) {
+                baseCols = 2; // 手機基礎 2 個，但會用邏輯讓部分行變 3 個
             } else if (window.innerWidth < 800) {
-                cols = 3; // 平板直向：一行 3 個
+                baseCols = 3;
             } else {
-                cols = 4; // 電腦 / iPad 橫向：一行 4 個
+                baseCols = 4;
             }
 
-            const rows = Math.ceil(students.length / cols);
+            // 計算總行數（粗略估計）
+            const totalRows = Math.ceil(students.length / baseCols);
+            
+            // ★★★ 關鍵 2：設定島嶼最大尺寸 ★★★
+            let maxAllowedSize;
+            if (isMobile) {
+                // 電話版：因為一行 2 個，寬度很夠，我們把上限放大到 150 (比之前大 50%)
+                maxAllowedSize = (containerWidth / 2) - 20; 
+                // 但如果算出來超過 160，就鎖在 160 避免太大
+                maxAllowedSize = Math.min(maxAllowedSize, 160);
+            } else {
+                // 平板/電腦版：維持原本的邏輯，上限 260
+                maxAllowedSize = Math.min((containerWidth / baseCols) - 20, 260);
+            }
 
-            // ★★★ 關鍵 2：根據屏幕寬度計算「每個島的最大上限尺寸」（整體放大了約 20%） ★★★
-            const maxCellWidth = (containerWidth / cols) - 20; // 減少一點預留空間，讓島更大
-            const maxCellHeight = (container.clientHeight / rows) - 20;
-            const maxAllowedSize = Math.min(maxCellWidth, maxCellHeight, 260); // 從 220 提升到 260
+            // ★★★ 關鍵 3：手機版專用的「不規則交錯」邏輯 ★★★
+            // 我們手動分配每一行的島嶼數量：2, 3, 2, 3... 這樣交錯
+            let rowAssignments = []; // 記錄每一行有幾個島
+            let remaining = students.length;
+            let toggle = 0;
+            while (remaining > 0) {
+                let count = (toggle % 2 === 0) ? 2 : 3; // 2, 3, 2, 3 交替
+                if (remaining < count) count = remaining;
+                rowAssignments.push(count);
+                remaining -= count;
+                toggle++;
+            }
 
-            students.forEach((student, index) => {
-                const levelInfo = getLevelInfo(student.total_exp);
+            // 如果不是手機，就用傳統的固定列數
+            if (!isMobile) {
+                rowAssignments = [];
+                for (let i = 0; i < totalRows; i++) {
+                    rowAssignments.push(baseCols);
+                }
+            }
+
+            // 重新計算總高度，因為手機的交錯會讓行數變多
+            const actualRows = rowAssignments.length;
+            
+            // 手機版的高度需要特別處理，因為我們要讓它上下起伏
+            const rowHeight = isMobile ? 180 : (container.clientHeight / actualRows);
+            
+            let currentIndex = 0;
+
+            rowAssignments.forEach((count, rowIndex) => {
+                // 計算這一行的基礎 Y 座標（由下往上）
+                // 如果是手機，我們讓 Y 座標有更大的起伏
+                const baseY = container.clientHeight - ((rowIndex + 0.5) * (container.clientHeight / actualRows));
                 
-                // ★★★ 關鍵 3：動態縮放島嶼尺寸 ★★★
-                const scaleRatio = levelInfo.size / 300; 
-                let landSize = maxAllowedSize * scaleRatio;
-                landSize = Math.max(landSize, 50); // 確保最小 50px（從 40 放大）
+                for (let i = 0; i < count; i++) {
+                    if (currentIndex >= students.length) break;
+                    const student = students[currentIndex];
+                    const levelInfo = getLevelInfo(student.total_exp);
+                    
+                    const scaleRatio = levelInfo.size / 300; 
+                    let landSize = maxAllowedSize * scaleRatio;
+                    landSize = Math.max(landSize, isMobile ? 60 : 50); // 手機最小 60，平板 50
 
-                // 計算格位（由下往上排）
-                const col = index % cols;
-                const row = Math.floor(index / cols);
-                
-                const baseX = (containerWidth / cols) * (col + 0.5);
-                const baseY = container.clientHeight - ((container.clientHeight / rows) * (row + 0.5));
+                    // 計算 X 座標：將這一行的島嶼均勻分佈
+                    const baseX = (containerWidth / (count + 1)) * (i + 1);
+                    
+                    // 加上水平偏移，讓它不要對齊
+                    const offsetX = (Math.random() - 0.5) * (containerWidth / count) * 0.4;
 
-                // ★★★ 關鍵 4：加大隨機偏移量，製造不規則群島效果 ★★★
-                // 偏移量設定為格子大小的 30%，讓島嶼在格子內隨意散落
-                const randomRangeX = (containerWidth / cols) * 0.3;
-                const randomRangeY = (container.clientHeight / rows) * 0.3;
-                
-                const offsetX = (Math.random() - 0.5) * randomRangeX;
-                const offsetY = (Math.random() - 0.5) * randomRangeY;
+                    // ★★★ 關鍵 4：垂直不規則偏移 ★★★
+                    // 這是讓島嶼「上下起伏」的關鍵
+                    // 手機版給予更大的 Y 軸偏移 (0.6 倍行高)，讓它看起來很散落
+                    const yOffsetRange = isMobile ? 80 : (container.clientHeight / actualRows) * 0.3;
+                    const offsetY = (Math.random() - 0.5) * yOffsetRange * 2; 
 
-                const posX = baseX + offsetX;
-                const posY = baseY + offsetY;
+                    const posX = baseX + offsetX;
+                    const posY = baseY + offsetY;
 
-                // 天災狀態
-                let disasterClass = '';
-                let extraHTML = '';
+                    // 天災狀態
+                    let disasterClass = '';
+                    let extraHTML = '';
 
-                if (student.repair_stage === 1) {
-                    disasterClass = 'disaster-kraken';
-                    extraHTML += `<div class="kraken-tentacle" style="top: -20px; left: -20px;">🦑</div>`;
-                    extraHTML += `<div class="kraken-tentacle" style="bottom: -20px; right: -20px;">🐙</div>`;
-                } else if (student.repair_stage === 2) {
-                    disasterClass = 'disaster-ruin';
-                    extraHTML += `<div class="repair-warning">🚧 維修中...</div>`;
-                } else if (student.today_score <= -6) {
-                    disasterClass = 'disaster-kraken';
-                } else if (student.today_score < 0) {
-                    disasterClass = 'disaster-storm';
-                    extraHTML += `<div class="lightning"></div>`;
-                    extraHTML += `<div class="storm-cloud" style="top: -30px; left: 10%;">☁️</div>`;
-                    extraHTML += `<div class="storm-cloud" style="top: -25px; right: 10%;">🌧️</div>`;
-                    extraHTML += `<div class="storm-cloud" style="top: -40px; left: 40%; font-size: 2.5rem;">⛈️</div>`;
-                }
+                    if (student.repair_stage === 1) {
+                        disasterClass = 'disaster-kraken';
+                        extraHTML += `<div class="kraken-tentacle" style="top: -20px; left: -20px;">🦑</div>`;
+                        extraHTML += `<div class="kraken-tentacle" style="bottom: -20px; right: -20px;">🐙</div>`;
+                    } else if (student.repair_stage === 2) {
+                        disasterClass = 'disaster-ruin';
+                        extraHTML += `<div class="repair-warning">🚧 維修中...</div>`;
+                    } else if (student.today_score <= -6) {
+                        disasterClass = 'disaster-kraken';
+                    } else if (student.today_score < 0) {
+                        disasterClass = 'disaster-storm';
+                        extraHTML += `<div class="lightning"></div>`;
+                        extraHTML += `<div class="storm-cloud" style="top: -30px; left: 10%;">☁️</div>`;
+                        extraHTML += `<div class="storm-cloud" style="top: -25px; right: 10%;">🌧️</div>`;
+                        extraHTML += `<div class="storm-cloud" style="top: -40px; left: 40%; font-size: 2.5rem;">⛈️</div>`;
+                    }
 
-                // 裝飾物生成
-                let microItemsHTML = '';
-                const exp = student.total_exp;
+                    // 裝飾物生成
+                    let microItemsHTML = '';
+                    const exp = student.total_exp;
 
-                function randomPosition() {
-                    const angle = Math.random() * Math.PI * 2;
-                    const radius = Math.random() * 42;
-                    return {
-                        x: 50 + Math.cos(angle) * radius,
-                        y: 50 + Math.sin(angle) * radius
-                    };
-                }
+                    function randomPosition() {
+                        const angle = Math.random() * Math.PI * 2;
+                        const radius = Math.random() * 42;
+                        return {
+                            x: 50 + Math.cos(angle) * radius,
+                            y: 50 + Math.sin(angle) * radius
+                        };
+                    }
 
-                const flowerCount = Math.floor(exp / 1) + Math.floor(exp / 2);
-                for (let i = 0; i < flowerCount && i < 20; i++) {
-                    const pos = randomPosition();
-                    const emoji = Math.random() < 0.5 ? '🌸' : '🌿';
-                    microItemsHTML += `<div class="micro-item" style="left: ${pos.x}%; top: ${pos.y}%; animation-delay: ${Math.random() * 2}s;">${emoji}</div>`;
-                }
+                    const flowerCount = Math.floor(exp / 1) + Math.floor(exp / 2);
+                    for (let j = 0; j < flowerCount && j < 20; j++) {
+                        const pos = randomPosition();
+                        const emoji = Math.random() < 0.5 ? '🌸' : '🌿';
+                        microItemsHTML += `<div class="micro-item" style="left: ${pos.x}%; top: ${pos.y}%; animation-delay: ${Math.random() * 2}s;">${emoji}</div>`;
+                    }
 
-                const treeCount = Math.floor(exp / 3) + Math.floor(exp / 4);
-                for (let i = 0; i < treeCount && i < 12; i++) {
-                    const pos = randomPosition();
-                    const emoji = Math.random() < 0.5 ? '🌴' : '🌳';
-                    microItemsHTML += `<div class="micro-item" style="left: ${pos.x}%; top: ${pos.y}%; font-size: 1.1rem; animation-delay: ${Math.random() * 2}s;">${emoji}</div>`;
-                }
+                    const treeCount = Math.floor(exp / 3) + Math.floor(exp / 4);
+                    for (let j = 0; j < treeCount && j < 12; j++) {
+                        const pos = randomPosition();
+                        const emoji = Math.random() < 0.5 ? '🌴' : '🌳';
+                        microItemsHTML += `<div class="micro-item" style="left: ${pos.x}%; top: ${pos.y}%; font-size: 1.1rem; animation-delay: ${Math.random() * 2}s;">${emoji}</div>`;
+                    }
 
-                const creatureCount = Math.floor(exp / 5) + Math.floor(exp / 6);
-                const creatureEmojis = ['🐕', '🐓', '🚗', '🤖'];
-                for (let i = 0; i < creatureCount && i < 10; i++) {
-                    const pos = randomPosition();
-                    const emoji = creatureEmojis[Math.floor(Math.random() * creatureEmojis.length)];
-                    microItemsHTML += `<div class="micro-item" style="left: ${pos.x}%; top: ${pos.y}%; font-size: 1rem; animation-delay: ${Math.random() * 2}s;">${emoji}</div>`;
-                }
+                    const creatureCount = Math.floor(exp / 5) + Math.floor(exp / 6);
+                    const creatureEmojis = ['🐕', '🐓', '🚗', '🤖'];
+                    for (let j = 0; j < creatureCount && j < 10; j++) {
+                        const pos = randomPosition();
+                        const emoji = creatureEmojis[Math.floor(Math.random() * creatureEmojis.length)];
+                        microItemsHTML += `<div class="micro-item" style="left: ${pos.x}%; top: ${pos.y}%; font-size: 1rem; animation-delay: ${Math.random() * 2}s;">${emoji}</div>`;
+                    }
 
-                // 皇冠
-                let crownHTML = '';
-                if (student.total_exp === maxExp && maxExp > 0) {
-                    crownHTML = `<div style="position: absolute; top: -20px; right: -10px; font-size: 2rem; z-index: 30; animation: float 2s infinite;">👑</div>`;
-                }
+                    // 皇冠
+                    let crownHTML = '';
+                    if (student.total_exp === maxExp && maxExp > 0) {
+                        crownHTML = `<div style="position: absolute; top: -20px; right: -10px; font-size: 2rem; z-index: 30; animation: float 2s infinite;">👑</div>`;
+                    }
 
-                // ★★★ 關鍵 5：Emoji 大小與島嶼尺寸掛鉤 ★★★
-                const emojiSize = landSize * 0.4; 
-                const nameSize = Math.max(0.6, landSize / 100) + 'rem';
+                    // Emoji 大小與島嶼尺寸掛鉤
+                    const emojiSize = landSize * 0.4; 
+                    const nameSize = Math.max(0.6, landSize / 100) + 'rem';
 
-                const island = document.createElement('div');
-                island.className = `island ${disasterClass}`;
-                island.style.left = `${posX}px`;
-                island.style.top = `${posY}px`;
-                island.style.width = `${landSize + 40}px`;
-                island.style.height = `${landSize + 40}px`;
+                    const island = document.createElement('div');
+                    island.className = `island ${disasterClass}`;
+                    island.style.left = `${posX}px`;
+                    island.style.top = `${posY}px`;
+                    island.style.width = `${landSize + 40}px`;
+                    island.style.height = `${landSize + 40}px`;
 
-                island.innerHTML = `
-                    <div class="island-canvas" style="width: ${landSize}px; height: ${landSize}px;">
-                        ${extraHTML}
-                        <div class="island-land">
-                            <div class="core-building" style="font-size: ${emojiSize}px;">${levelInfo.building}</div>
-                            ${microItemsHTML}
-                            <div class="student-info">
-                                <div class="student-name" style="font-size: ${nameSize};">${student.id}. ${student.name}</div>
-                                <div class="student-stats" style="font-size: calc(${nameSize} * 0.7);">LV${levelInfo.level} ${levelInfo.name} | ${student.total_exp} EXP</div>
+                    island.innerHTML = `
+                        <div class="island-canvas" style="width: ${landSize}px; height: ${landSize}px;">
+                            ${extraHTML}
+                            <div class="island-land">
+                                <div class="core-building" style="font-size: ${emojiSize}px;">${levelInfo.building}</div>
+                                ${microItemsHTML}
+                                <div class="student-info">
+                                    <div class="student-name" style="font-size: ${nameSize};">${student.id}. ${student.name}</div>
+                                    <div class="student-stats" style="font-size: calc(${nameSize} * 0.7);">LV${levelInfo.level} ${levelInfo.name} | ${student.total_exp} EXP</div>
+                                </div>
                             </div>
+                            ${crownHTML}
                         </div>
-                        ${crownHTML}
-                    </div>
-                `;
-                container.appendChild(island);
+                    `;
+                    container.appendChild(island);
+                    currentIndex++;
+                }
             });
         }
 
