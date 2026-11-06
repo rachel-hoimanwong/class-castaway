@@ -6,6 +6,7 @@
     <title>3C大航海：無盡孤島</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        /* ================= 基礎設定 ================= */
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
         body {
             font-family: 'Noto Sans TC', sans-serif;
@@ -14,6 +15,8 @@
             overflow-x: hidden;
             -webkit-tap-highlight-color: transparent;
         }
+
+        /* ================= 霓虹燈標題動畫 ================= */
         @keyframes neonCyberpunk {
             0%, 100% {
                 text-shadow: 0 0 5px #fff, 0 0 10px #fff,
@@ -40,18 +43,16 @@
             margin-bottom: 1rem;
             line-height: 1.2;
         }
-           /* ================= 大海與群島佈局 ================= */
+
+        /* ================= 大海背景與波紋 ================= */
         .ocean-container {
             position: relative;
             width: 100%;
             min-height: 100vh;
             padding: 20px;
-               /* 模擬深海背景 */
             background: radial-gradient(circle at 50% 50%, #0c4a6e 0%, #294b84 50%, #82aeb7 100%);
             overflow: hidden;
         }
-
-            /* 海浪波紋效果 (裝飾用) */
         .ocean-container::before {
             content: '';
             position: absolute;
@@ -66,39 +67,36 @@
             0% { background-position: 0 0; }
             100% { background-position: 200px 0; }
         }
-        /* 群島容器 (使用相對定位，讓島嶼隨機散落) */
+
+        /* ================= 群島容器與島嶼定位 ================= */
         .archipelago {
-    position: relative;
-    width: 100%;
-    min-height: 120vh;
-    padding: 40px 10px;
-}
-          /* ================= 單一島嶼 ================= */
-       .island {
-    position: absolute;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    transition: transform 0.3s ease;
-    transform: translate(-50%, -50%);
-}
-         
+            position: relative;
+            width: 100%;
+            min-height: 120vh;
+            padding: 40px 10px;
+        }
+        .island {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s ease;
+            transform: translate(-50%, -50%);
+        }
         .island:hover {
             transform: translate(-50%, -50%) scale(1.05) translateY(-5px);
             z-index: 50;
         }
-         /* 島嶼畫布 (圓形，無邊框) */
+
+        /* ================= 島嶼畫布與陸地 ================= */
         .island-canvas {
             position: relative;
-            width: 150px; /* 基礎大小 */
-            height: 150px;
             display: flex;
             justify-content: center;
             align-items: center;
             transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
-           /* 島嶼陸地 (填海效果) */
         .island-land {
             background-color: #22c55e;
             border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
@@ -113,8 +111,9 @@
             height: 100%;
             z-index: 2;
         }
+
+        /* ================= 核心建築與學生資訊 ================= */
         .core-building {
-            font-size: 3.5rem; /* 從 6rem 改小，避免撐爆小島 */
             position: absolute;
             top: 50%;
             left: 50%;
@@ -123,7 +122,6 @@
             filter: drop-shadow(2px 4px 4px rgba(0,0,0,0.5));
             transition: all 0.3s;
         }
-        /* 學生資訊 (顯示在建築物下方) */
         .student-info {
             position: absolute;
             top: 70%;
@@ -135,14 +133,12 @@
             pointer-events: none;
         }
         .student-name {
-            font-size: 0.9rem;
             font-weight: 900;
             color: #fff;
             text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
             white-space: nowrap;
         }
         .student-stats {
-            font-size: 0.65rem;
             color: #e2e8f0;
             text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
             background: rgba(0,0,0,0.5);
@@ -152,7 +148,8 @@
             margin-top: 2px;
             white-space: nowrap;
         }
-        /* 微觀裝飾物 */
+
+        /* ================= 微觀裝飾物 ================= */
         .micro-item {
             position: absolute;
             font-size: 0.9rem;
@@ -163,55 +160,70 @@
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-3px); }
         }
-         /* ================= 天災與維修狀態特效 ================= */
-        /* 1. 雷暴雨 (Stage 0, today_score -1~-5) */
+
+        /* ================= 天災特效：雷暴雨 ================= */
         .disaster-storm .island-land {
             filter: brightness(0.7) grayscale(0.5);
         }
         .disaster-storm .core-building::after {
-    content: '💨';
-    position: absolute;
-    top: -20px;
-    right: -15px;
-    font-size: 1.8rem;
-    animation: smoke 2s infinite;
-    z-index: 15;
-}
-.disaster-storm .core-building::before {
-    content: '💨';
-    position: absolute;
-    top: -30px;
-    left: -15px;
-    font-size: 1.4rem;
-    animation: smoke 2s infinite 0.5s;
-    z-index: 15;
-    opacity: 0.7;
-}
+            content: '💨';
+            position: absolute;
+            top: -20px;
+            right: -15px;
+            font-size: 1.8rem;
+            animation: smoke 2s infinite;
+            z-index: 15;
+        }
+        .disaster-storm .core-building::before {
+            content: '💨';
+            position: absolute;
+            top: -30px;
+            left: -15px;
+            font-size: 1.4rem;
+            animation: smoke 2s infinite 0.5s;
+            z-index: 15;
+            opacity: 0.7;
+        }
         @keyframes smoke {
             0% { transform: translateY(0) scale(1); opacity: 0.8; }
             100% { transform: translateY(-20px) scale(1.5); opacity: 0; }
         }
         .lightning {
-        position: absolute;
-        top: 0; left: 0;
-        width: 100%; height: 100%;
-        background: rgba(255, 255, 255, 0.4);
-        opacity: 0;
-        animation: flash 3s infinite;
-        pointer-events: none;
-        z-index: 20;
-    }
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(255, 255, 255, 0.4);
+            opacity: 0;
+            animation: flash 3s infinite;
+            pointer-events: none;
+            z-index: 20;
+        }
         @keyframes flash {
             0%, 95%, 100% { opacity: 0; }
             96%, 98% { opacity: 1; }
         }
+        .storm-cloud {
+            position: absolute;
+            font-size: 2rem;
+            z-index: 25;
+            pointer-events: none;
+            animation: cloudFloat 3s ease-in-out infinite;
+            filter: drop-shadow(0 0 8px rgba(0, 0, 0, 0.6));
+        }
+        @keyframes cloudFloat {
+            0%, 100% { transform: translateY(0) translateX(0); }
+            25% { transform: translateY(-5px) translateX(-3px); }
+            50% { transform: translateY(-8px) translateX(3px); }
+            75% { transform: translateY(-5px) translateX(-3px); }
+        }
+
+        /* ================= 天災特效：海怪 ================= */
         .disaster-kraken .island-land {
             background-color: #1a1a1a;
             border: 3px solid #ef4444;
             box-shadow: 0 0 20px #ef4444;
             animation: shake 0.5s infinite;
         }
-        /* 2. 海怪大災難 (Stage 1) */
         @keyframes shake {
             0% { transform: translate(1px, 1px) rotate(0deg); }
             10% { transform: translate(-1px, -2px) rotate(-1deg); }
@@ -236,6 +248,8 @@
             0%, 100% { transform: rotate(-10deg) translateY(0); }
             50% { transform: rotate(10deg) translateY(-5px); }
         }
+
+        /* ================= 天災特效：廢墟維修 ================= */
         .disaster-ruin .island-land {
             background-color: #4a4a4a;
         }
@@ -261,576 +275,504 @@
         }
 
         /* ================= 規則說明看板 ================= */
-.rules-board {
-    max-width: 900px;
-    margin: 20px auto 40px;
-    padding: 20px;
-    background: rgba(15, 23, 42, 0.85);
-    border: 2px solid #00e5ff;
-    border-radius: 16px;
-    box-shadow: 0 0 20px rgba(0, 229, 255, 0.3);
-}
-
-.rules-title {
-    text-align: center;
-    font-size: 1.5rem;
-    font-weight: 900;
-    color: #00e5ff;
-    text-shadow: 0 0 10px rgba(0, 229, 255, 0.8);
-    margin-bottom: 16px;
-    letter-spacing: 3px;
-}
-
-.rules-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-    margin-bottom: 16px;
-}
-
-.rule-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    background: rgba(30, 41, 59, 0.8);
-    padding: 10px;
-    border-radius: 10px;
-    border: 1px solid #334155;
-}
-
-.rule-icon {
-    font-size: 1.8rem;
-    flex-shrink: 0;
-}
-
-.rule-name {
-    font-size: 0.85rem;
-    font-weight: bold;
-    color: #fff;
-}
-
-.rule-exp {
-    font-size: 0.7rem;
-    color: #94a3b8;
-}
-
-.rules-note {
-    text-align: center;
-    font-size: 0.8rem;
-    color: #cbd5e1;
-    padding-top: 10px;
-    border-top: 1px dashed #334155;
-}
-
-/* 手機版調整：一行 2 個 */
-@media (max-width: 600px) {
-    .rules-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-    .rule-icon {
-        font-size: 1.5rem;
-    }
-    .rule-name {
-        font-size: 0.75rem;
-    }
-}
+        .rules-board {
+            max-width: 900px;
+            margin: 20px auto 40px;
+            padding: 20px;
+            background: rgba(15, 23, 42, 0.85);
+            border: 2px solid #00e5ff;
+            border-radius: 16px;
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.3);
+        }
+        .rules-title {
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: #00e5ff;
+            text-shadow: 0 0 10px rgba(0, 229, 255, 0.8);
+            margin-bottom: 16px;
+            letter-spacing: 3px;
+        }
+        .rules-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        .rule-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(30, 41, 59, 0.8);
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid #334155;
+        }
+        .rule-icon {
+            font-size: 1.8rem;
+            flex-shrink: 0;
+        }
+        .rule-name {
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: #fff;
+        }
+        .rule-exp {
+            font-size: 0.7rem;
+            color: #94a3b8;
+        }
+        .rules-note {
+            text-align: center;
+            font-size: 0.8rem;
+            color: #cbd5e1;
+            padding-top: 10px;
+            border-top: 1px dashed #334155;
+        }
 
         /* ================= 手動更新按鈕 ================= */
-    .refresh-btn {
-    position: fixed;
-        bottom: 20px;
-        right: 20px;
-        padding: 15px 24px;
-        background: #00e5ff;
-        color: #000;
-        border: none;
-        border-radius: 50px;
-        font-weight: 900;
-        font-size: 1rem;
-        font-family: 'Noto Sans TC', sans-serif;
-        box-shadow: 0 0 20px #00e5ff, 0 4px 10px rgba(0,0,0,0.4);
-        cursor: pointer;
-        z-index: 999;
-        transition: transform 0.2s, box-shadow 0.2s;
-        letter-spacing: 1px;
-    }
-    .refresh-btn:active {
-        transform: scale(0.9);
-        box-shadow: 0 0 30px #00e5ff;
-    }
-    .refresh-btn:hover {
-        box-shadow: 0 0 30px #00e5ff, 0 0 60px rgba(0, 229, 255, 0.5);
-    }
-    /* ================= 雷暴雨的烏雲與颱風 ================= */
-.storm-cloud {
-    position: absolute;
-    font-size: 2rem;
-    z-index: 25;
-    pointer-events: none;
-    animation: cloudFloat 3s ease-in-out infinite;
-    filter: drop-shadow(0 0 8px rgba(0, 0, 0, 0.6));
-}
+        .refresh-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 15px 24px;
+            background: #00e5ff;
+            color: #000;
+            border: none;
+            border-radius: 50px;
+            font-weight: 900;
+            font-size: 1rem;
+            font-family: 'Noto Sans TC', sans-serif;
+            box-shadow: 0 0 20px #00e5ff, 0 4px 10px rgba(0,0,0,0.4);
+            cursor: pointer;
+            z-index: 999;
+            transition: transform 0.2s, box-shadow 0.2s;
+            letter-spacing: 1px;
+        }
+        .refresh-btn:active {
+            transform: scale(0.9);
+            box-shadow: 0 0 30px #00e5ff;
+        }
+        .refresh-btn:hover {
+            box-shadow: 0 0 30px #00e5ff, 0 0 60px rgba(0, 229, 255, 0.5);
+        }
 
-@keyframes cloudFloat {
-    0%, 100% { transform: translateY(0) translateX(0); }
-    25% { transform: translateY(-5px) translateX(-3px); }
-    50% { transform: translateY(-8px) translateX(3px); }
-    75% { transform: translateY(-5px) translateX(-3px); }
-}    
+        /* ================= 結算區 ================= */
+        .settlement-section {
+            max-width: 1200px;
+            margin: 60px auto;
+            padding: 20px;
+        }
+        .settlement-title {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: #ffee00;
+            text-shadow: 0 0 20px #ffee00, 0 0 40px #ffee00;
+            margin-bottom: 40px;
+            letter-spacing: 5px;
+            animation: neonCyberpunk 3s infinite alternate;
+        }
+        .podium-title, .sunken-title {
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: #00e5ff;
+            text-shadow: 0 0 10px rgba(0, 229, 255, 0.8);
+            margin-bottom: 20px;
+        }
 
-/* ================= 結算區 ================= */
-.settlement-section {
-    max-width: 1200px;
-    margin: 60px auto;
-    padding: 20px;
-}
+        /* 最強島主 Top 3 */
+        .podium-grid {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            gap: 20px;
+            margin-bottom: 50px;
+            flex-wrap: wrap;
+        }
+        .podium-card {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border: 2px solid #ffee00;
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            min-width: 150px;
+            box-shadow: 0 0 20px rgba(255, 238, 0, 0.5);
+            position: relative;
+        }
+        .podium-card.rank-1 {
+            border-color: #ffd700;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.8);
+            transform: scale(1.15);
+            z-index: 3;
+        }
+        .podium-card.rank-2 {
+            border-color: #c0c0c0;
+            box-shadow: 0 0 20px rgba(192, 192, 192, 0.6);
+            z-index: 2;
+        }
+        .podium-card.rank-3 {
+            border-color: #cd7f32;
+            box-shadow: 0 0 20px rgba(205, 127, 50, 0.6);
+            z-index: 1;
+        }
+        .podium-crown {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+        .podium-name {
+            font-size: 1.2rem;
+            font-weight: 900;
+            color: #fff;
+            margin-bottom: 5px;
+        }
+        .podium-exp {
+            font-size: 1rem;
+            color: #ffee00;
+            font-weight: bold;
+        }
+        .podium-rank {
+            font-size: 0.8rem;
+            color: #94a3b8;
+            margin-top: 5px;
+        }
 
-.settlement-title {
-    text-align: center;
-    font-size: 2.5rem;
-    font-weight: 900;
-    color: #ffee00;
-    text-shadow: 0 0 20px #ffee00, 0 0 40px #ffee00;
-    margin-bottom: 40px;
-    letter-spacing: 5px;
-    animation: neonCyberpunk 3s infinite alternate;
-}
+        /* 沉沒之島 */
+        .sunken-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+        }
+        .sunken-card {
+            background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+            border: 2px solid #ef4444;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            animation: sinkAnimation 3s ease-in-out infinite alternate;
+        }
+        @keyframes sinkAnimation {
+            0% { transform: translateY(0); box-shadow: 0 0 10px rgba(239, 68, 68, 0.5); }
+            100% { transform: translateY(8px); box-shadow: 0 0 25px rgba(239, 68, 68, 0.8); }
+        }
+        .sunken-card::before {
+            content: '🌊';
+            position: absolute;
+            top: -20px;
+            left: 0;
+            right: 0;
+            font-size: 2rem;
+            opacity: 0.5;
+            animation: waveMove 3s linear infinite;
+        }
+        .sunken-name {
+            font-size: 1.1rem;
+            font-weight: 900;
+            color: #fff;
+            margin-bottom: 5px;
+            position: relative;
+            z-index: 2;
+        }
+        .sunken-score {
+            font-size: 0.9rem;
+            color: #ef4444;
+            font-weight: bold;
+            position: relative;
+            z-index: 2;
+        }
+        .sunken-hint {
+            font-size: 0.7rem;
+            color: #94a3b8;
+            margin-top: 8px;
+            position: relative;
+            z-index: 2;
+        }
 
-.podium-title, .sunken-title {
-    text-align: center;
-    font-size: 1.5rem;
-    font-weight: 900;
-    color: #00e5ff;
-    text-shadow: 0 0 10px rgba(0, 229, 255, 0.8);
-    margin-bottom: 20px;
-}
+        /* ================= 終極大寶藏 Modal ================= */
+        .treasure-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        .treasure-modal.active {
+            display: flex;
+        }
+        .treasure-content {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border: 3px solid #ffd700;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 0 50px rgba(255, 215, 0, 0.6);
+            text-align: center;
+            animation: popIn 0.5s ease-out;
+        }
+        @keyframes popIn {
+            0% { transform: scale(0.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .treasure-title {
+            font-size: 2rem;
+            font-weight: 900;
+            color: #ffd700;
+            text-shadow: 0 0 20px #ffd700;
+            margin-bottom: 10px;
+        }
+        .treasure-student {
+            font-size: 1.2rem;
+            color: #fff;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        .punishment-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            margin-bottom: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+        }
+        .punishment-item {
+            font-size: 0.8rem;
+            color: #cbd5e1;
+            padding: 6px 8px;
+            background: rgba(30, 41, 59, 0.8);
+            border-radius: 6px;
+            text-align: left;
+            border: 1px solid #334155;
+        }
+        .punishment-item.locked {
+            opacity: 0.3;
+            text-decoration: line-through;
+        }
+        .open-treasure-btn {
+            font-size: 1.5rem;
+            font-weight: 900;
+            padding: 20px 40px;
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+            color: #000;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 0 30px #ffd700;
+            transition: transform 0.2s;
+            font-family: 'Noto Sans TC', sans-serif;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 30px #ffd700; }
+            50% { transform: scale(1.05); box-shadow: 0 0 50px #ffd700; }
+        }
+        .open-treasure-btn:active {
+            transform: scale(0.95);
+        }
+        .treasure-result {
+            margin-top: 20px;
+        }
+        .treasure-box {
+            font-size: 6rem;
+            animation: shakeBox 0.5s infinite;
+            cursor: pointer;
+        }
+        @keyframes shakeBox {
+            0%, 100% { transform: rotate(-5deg) scale(1); }
+            50% { transform: rotate(5deg) scale(1.1); }
+        }
+        .treasure-box.opened {
+            animation: openBox 0.8s ease-out forwards;
+        }
+        @keyframes openBox {
+            0% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.5) rotate(10deg); }
+            100% { transform: scale(2) rotate(0deg); opacity: 0; }
+        }
+        .treasure-prize {
+            font-size: 1.3rem;
+            font-weight: 900;
+            color: #ffd700;
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(255, 215, 0, 0.1);
+            border: 2px solid #ffd700;
+            border-radius: 12px;
+            animation: popIn 0.5s ease-out;
+            line-height: 1.6;
+        }
+        .close-treasure-btn {
+            margin-top: 20px;
+            padding: 12px 30px;
+            background: #334155;
+            color: #cbd5e1;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            cursor: pointer;
+            font-family: 'Noto Sans TC', sans-serif;
+        }
+        .close-treasure-btn:active {
+            background: #475569;
+        }
 
-/* 最強島主 Top 3 */
-.podium-grid {
-    display: flex;
-    justify-content: center;
-    align-items: flex-end;
-    gap: 20px;
-    margin-bottom: 50px;
-    flex-wrap: wrap;
-}
-
-.podium-card {
-    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-    border: 2px solid #ffee00;
-    border-radius: 16px;
-    padding: 20px;
-    text-align: center;
-    min-width: 150px;
-    box-shadow: 0 0 20px rgba(255, 238, 0, 0.5);
-    position: relative;
-}
-
-.podium-card.rank-1 {
-    border-color: #ffd700;
-    box-shadow: 0 0 30px rgba(255, 215, 0, 0.8);
-    transform: scale(1.15);
-    z-index: 3;
-}
-
-.podium-card.rank-2 {
-    border-color: #c0c0c0;
-    box-shadow: 0 0 20px rgba(192, 192, 192, 0.6);
-    z-index: 2;
-}
-
-.podium-card.rank-3 {
-    border-color: #cd7f32;
-    box-shadow: 0 0 20px rgba(205, 127, 50, 0.6);
-    z-index: 1;
-}
-
-.podium-crown {
-    font-size: 3rem;
-    margin-bottom: 10px;
-}
-
-.podium-name {
-    font-size: 1.2rem;
-    font-weight: 900;
-    color: #fff;
-    margin-bottom: 5px;
-}
-
-.podium-exp {
-    font-size: 1rem;
-    color: #ffee00;
-    font-weight: bold;
-}
-
-.podium-rank {
-    font-size: 0.8rem;
-    color: #94a3b8;
-    margin-top: 5px;
-}
-
-/* 沉沒之島 */
-.sunken-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 15px;
-}
-
-.sunken-card {
-    background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
-    border: 2px solid #ef4444;
-    border-radius: 12px;
-    padding: 20px;
-    text-align: center;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-    animation: sinkAnimation 3s ease-in-out infinite alternate;
-}
-
-@keyframes sinkAnimation {
-    0% { transform: translateY(0); box-shadow: 0 0 10px rgba(239, 68, 68, 0.5); }
-    100% { transform: translateY(8px); box-shadow: 0 0 25px rgba(239, 68, 68, 0.8); }
-}
-
-.sunken-card::before {
-    content: '🌊';
-    position: absolute;
-    top: -20px;
-    left: 0;
-    right: 0;
-    font-size: 2rem;
-    opacity: 0.5;
-    animation: waveMove 3s linear infinite;
-}
-
-.sunken-name {
-    font-size: 1.1rem;
-    font-weight: 900;
-    color: #fff;
-    margin-bottom: 5px;
-    position: relative;
-    z-index: 2;
-}
-
-.sunken-score {
-    font-size: 0.9rem;
-    color: #ef4444;
-    font-weight: bold;
-    position: relative;
-    z-index: 2;
-}
-
-.sunken-hint {
-    font-size: 0.7rem;
-    color: #94a3b8;
-    margin-top: 8px;
-    position: relative;
-    z-index: 2;
-}
-
-/* ================= 終極大寶藏 Modal ================= */
-.treasure-modal {
-    display: none;
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.95);
-    z-index: 9999;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-    overflow-y: auto;
-}
-
-.treasure-modal.active {
-    display: flex;
-}
-
-.treasure-content {
-    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-    border: 3px solid #ffd700;
-    border-radius: 20px;
-    padding: 30px;
-    max-width: 600px;
-    width: 100%;
-    box-shadow: 0 0 50px rgba(255, 215, 0, 0.6);
-    text-align: center;
-    animation: popIn 0.5s ease-out;
-}
-
-@keyframes popIn {
-    0% { transform: scale(0.5); opacity: 0; }
-    100% { transform: scale(1); opacity: 1; }
-}
-
-.treasure-title {
-    font-size: 2rem;
-    font-weight: 900;
-    color: #ffd700;
-    text-shadow: 0 0 20px #ffd700;
-    margin-bottom: 10px;
-}
-
-.treasure-student {
-    font-size: 1.2rem;
-    color: #fff;
-    margin-bottom: 20px;
-    font-weight: bold;
-}
-
-.punishment-list {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 8px;
-    margin-bottom: 20px;
-    max-height: 300px;
-    overflow-y: auto;
-    padding: 10px;
-    background: rgba(0, 0, 0, 0.3);
-    border-radius: 10px;
-}
-
-.punishment-item {
-    font-size: 0.8rem;
-    color: #cbd5e1;
-    padding: 6px 8px;
-    background: rgba(30, 41, 59, 0.8);
-    border-radius: 6px;
-    text-align: left;
-    border: 1px solid #334155;
-}
-
-.punishment-item.locked {
-    opacity: 0.3;
-    text-decoration: line-through;
-}
-
-.open-treasure-btn {
-    font-size: 1.5rem;
-    font-weight: 900;
-    padding: 20px 40px;
-    background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
-    color: #000;
-    border: none;
-    border-radius: 50px;
-    cursor: pointer;
-    box-shadow: 0 0 30px #ffd700;
-    transition: transform 0.2s;
-    font-family: 'Noto Sans TC', sans-serif;
-    animation: pulse 1.5s infinite;
-}
-
-@keyframes pulse {
-    0%, 100% { transform: scale(1); box-shadow: 0 0 30px #ffd700; }
-    50% { transform: scale(1.05); box-shadow: 0 0 50px #ffd700; }
-}
-
-.open-treasure-btn:active {
-    transform: scale(0.95);
-}
-
-.treasure-result {
-    margin-top: 20px;
-}
-
-.treasure-box {
-    font-size: 6rem;
-    animation: shakeBox 0.5s infinite;
-    cursor: pointer;
-}
-
-@keyframes shakeBox {
-    0%, 100% { transform: rotate(-5deg) scale(1); }
-    50% { transform: rotate(5deg) scale(1.1); }
-}
-
-.treasure-box.opened {
-    animation: openBox 0.8s ease-out forwards;
-}
-
-@keyframes openBox {
-    0% { transform: scale(1) rotate(0deg); }
-    50% { transform: scale(1.5) rotate(10deg); }
-    100% { transform: scale(2) rotate(0deg); opacity: 0; }
-}
-
-.treasure-prize {
-    font-size: 1.3rem;
-    font-weight: 900;
-    color: #ffd700;
-    margin-top: 20px;
-    padding: 20px;
-    background: rgba(255, 215, 0, 0.1);
-    border: 2px solid #ffd700;
-    border-radius: 12px;
-    animation: popIn 0.5s ease-out;
-    line-height: 1.6;
-}
-
-.close-treasure-btn {
-    margin-top: 20px;
-    padding: 12px 30px;
-    background: #334155;
-    color: #cbd5e1;
-    border: none;
-    border-radius: 25px;
-    font-size: 1rem;
-    cursor: pointer;
-    font-family: 'Noto Sans TC', sans-serif;
-}
-
-.close-treasure-btn:active {
-    background: #475569;
-}
-
-/* 手機版 */
-@media (max-width: 600px) {
-    .settlement-title {
-        font-size: 1.8rem;
-    }
-    .podium-card {
-        min-width: 100px;
-        padding: 12px;
-    }
-    .podium-crown {
-        font-size: 2rem;
-    }
-    .podium-name {
-        font-size: 0.9rem;
-    }
-    .podium-card.rank-1 {
-        transform: scale(1.08);
-    }
-    .punishment-list {
-        grid-template-columns: 1fr;
-    }
-    .treasure-title {
-        font-size: 1.5rem;
-    }
-    .open-treasure-btn {
-        font-size: 1.2rem;
-        padding: 15px 30px;
-    }
-}
+        /* ================= 手機版調整 ================= */
+        @media (max-width: 600px) {
+            .settlement-title {
+                font-size: 1.8rem;
+            }
+            .podium-card {
+                min-width: 100px;
+                padding: 12px;
+            }
+            .podium-crown {
+                font-size: 2rem;
+            }
+            .podium-name {
+                font-size: 0.9rem;
+            }
+            .podium-card.rank-1 {
+                transform: scale(1.08);
+            }
+            .punishment-list {
+                grid-template-columns: 1fr;
+            }
+            .treasure-title {
+                font-size: 1.5rem;
+            }
+            .open-treasure-btn {
+                font-size: 1.2rem;
+                padding: 15px 30px;
+            }
+        }
     </style>
 </head>
 <body>
 
     <div class="ocean-container">
+        <!-- 霓虹燈標題 -->
         <h1 class="neon-title pt-8">3C大航海：無盡孤島</h1>
-<div class="text-center text-cyan-400 text-sm mb-4 font-bold tracking-widest">CLASS CASTAWAY</div>
+        <div class="text-center text-cyan-400 text-sm mb-4 font-bold tracking-widest">CLASS CASTAWAY</div>
 
-<!-- ★★★ 規則說明看板 ★★★ -->
-<div class="rules-board">
-    <h2 class="rules-title">⚓ 航海指南 ⚓</h2>
-    <div class="rules-grid">
-        <div class="rule-item">
-            <div class="rule-icon">🪨</div>
-            <div class="rule-text">
-                <div class="rule-name">LV0 荒蕪</div>
-                <div class="rule-exp">0 EXP</div>
+        <!-- ================= 規則說明看板 ================= -->
+        <div class="rules-board">
+            <h2 class="rules-title">⚓ 航海指南 ⚓</h2>
+            <div class="rules-grid">
+                <div class="rule-item">
+                    <div class="rule-icon">🪨</div>
+                    <div class="rule-text">
+                        <div class="rule-name">LV0 荒蕪</div>
+                        <div class="rule-exp">0 EXP</div>
+                    </div>
+                </div>
+                <div class="rule-item">
+                    <div class="rule-icon">⛺</div>
+                    <div class="rule-text">
+                        <div class="rule-name">LV1 荒島</div>
+                        <div class="rule-exp">1 ~ 20 EXP</div>
+                    </div>
+                </div>
+                <div class="rule-item">
+                    <div class="rule-icon">🏕️</div>
+                    <div class="rule-text">
+                        <div class="rule-name">LV2 營地</div>
+                        <div class="rule-exp">21 ~ 45 EXP</div>
+                    </div>
+                </div>
+                <div class="rule-item">
+                    <div class="rule-icon">🏰</div>
+                    <div class="rule-text">
+                        <div class="rule-name">LV3 部落</div>
+                        <div class="rule-exp">46 ~ 90 EXP</div>
+                    </div>
+                </div>
+                <div class="rule-item">
+                    <div class="rule-icon">🏙️</div>
+                    <div class="rule-text">
+                        <div class="rule-name">LV4 城鎮</div>
+                        <div class="rule-exp">91 ~ 150 EXP</div>
+                    </div>
+                </div>
+                <div class="rule-item">
+                    <div class="rule-icon">🌆</div>
+                    <div class="rule-text">
+                        <div class="rule-name">LV5 帝國</div>
+                        <div class="rule-exp">151+ EXP</div>
+                    </div>
+                </div>
+            </div>
+            <div class="rules-note">
+                🌸 每 1~2 點 EXP 生成花草 ｜ 🌴 每 3~4 點 EXP 生成樹木 ｜ 🤖 每 5~6 點 EXP 生成動物與機械
             </div>
         </div>
-        <div class="rule-item">
-            <div class="rule-icon">⛺</div>
-            <div class="rule-text">
-                <div class="rule-name">LV1 荒島</div>
-                <div class="rule-exp">1 ~ 20 EXP</div>
-            </div>
-        </div>
-        <div class="rule-item">
-            <div class="rule-icon">🏕️</div>
-            <div class="rule-text">
-                <div class="rule-name">LV2 營地</div>
-                <div class="rule-exp">21 ~ 45 EXP</div>
-            </div>
-        </div>
-        <div class="rule-item">
-            <div class="rule-icon">🏰</div>
-            <div class="rule-text">
-                <div class="rule-name">LV3 部落</div>
-                <div class="rule-exp">46 ~ 90 EXP</div>
-            </div>
-        </div>
-        <div class="rule-item">
-            <div class="rule-icon">🏙️</div>
-            <div class="rule-text">
-                <div class="rule-name">LV4 城鎮</div>
-                <div class="rule-exp">91 ~ 150 EXP</div>
-            </div>
-        </div>
-        <div class="rule-item">
-            <div class="rule-icon">🌆</div>
-            <div class="rule-text">
-                <div class="rule-name">LV5 帝國</div>
-                <div class="rule-exp">151+ EXP</div>
-            </div>
-        </div>
-    </div>
-    <div class="rules-note">
-        🌸 每 1~2 點 EXP 生成花草 ｜ 🌴 每 3~4 點 EXP 生成樹木 ｜ 🤖 每 5~6 點 EXP 生成動物與機械
-    </div>
-</div>
 
-<div class="archipelago" id="archipelago"></div>
-    
-    <!-- ★★★ 結算區 ★★★ -->
-<section class="settlement-section">
-    <h2 class="settlement-title">🏁 本週結算 🏁</h2>
+        <!-- ================= 群島展示區 ================= -->
+        <div class="archipelago" id="archipelago"></div>
 
-    <!-- 最強島主 Top 3 -->
-    <div class="podium-section">
-        <h3 class="podium-title">👑 最強島主 👑</h3>
-        <div class="podium-grid" id="podiumGrid">
-            <!-- JavaScript 動態生成 -->
-        </div>
-    </div>
+        <!-- ================= 結算區 ================= -->
+        <section class="settlement-section">
+            <h2 class="settlement-title">🏁 本週結算 🏁</h2>
 
-    <!-- 沉沒之島 -->
-    <div class="sunken-section">
-        <h3 class="sunken-title">🌊 沉沒之島 🌊</h3>
-        <div class="sunken-grid" id="sunkenGrid">
-            <!-- JavaScript 動態生成 -->
-        </div>
-    </div>
-</section>
+            <!-- 最強島主 Top 3 -->
+            <div class="podium-section">
+                <h3 class="podium-title">👑 最強島主 👑</h3>
+                <div class="podium-grid" id="podiumGrid">
+                    <!-- JavaScript 動態生成 -->
+                </div>
+            </div>
 
-<!-- ★★★ 終極大寶藏 Modal ★★★ -->
-<div class="treasure-modal" id="treasureModal">
-    <div class="treasure-content">
-        <h2 class="treasure-title">🎁 終極大寶藏 🎁</h2>
-        <p class="treasure-student" id="treasureStudentName">學生名稱</p>
-        
-        <!-- 懲罰清單 -->
-        <div class="punishment-list" id="punishmentList">
-            <!-- JavaScript 動態生成 -->
-        </div>
-        
-        <!-- 開獎按鈕 -->
-        <button class="open-treasure-btn" id="openTreasureBtn" onclick="openTreasure()">
-            🎁 開獎 🎁
-        </button>
-        
-        <!-- 寶箱動畫區 -->
-        <div class="treasure-result" id="treasureResult" style="display: none;">
-            <div class="treasure-box" id="treasureBox">🎁</div>
-            <div class="treasure-prize" id="treasurePrize"></div>
-        </div>
-        
-        <!-- 關閉按鈕 -->
-        <button class="close-treasure-btn" onclick="closeTreasure()">關閉</button>
-    </div>
-</div>
-        
-    <!-- ★★★ 手動更新按鈕插在這裡 ★★★ -->
+            <!-- 沉沒之島 -->
+            <div class="sunken-section">
+                <h3 class="sunken-title">🌊 沉沒之島 🌊</h3>
+                <div class="sunken-grid" id="sunkenGrid">
+                    <!-- JavaScript 動態生成 -->
+                </div>
+            </div>
+        </section>
+
+        <!-- 手動更新按鈕 -->
         <button onclick="fetchStudents()" class="refresh-btn">🔄 更新</button>
-</div>
+    </div>
+
+    <!-- ================= 終極大寶藏 Modal ================= -->
+    <div class="treasure-modal" id="treasureModal">
+        <div class="treasure-content">
+            <h2 class="treasure-title">🎁 終極大寶藏 🎁</h2>
+            <p class="treasure-student" id="treasureStudentName">學生名稱</p>
+            
+            <div class="punishment-list" id="punishmentList">
+                <!-- JavaScript 動態生成 -->
+            </div>
+            
+            <button class="open-treasure-btn" id="openTreasureBtn" onclick="openTreasure()">
+                🎁 開獎 🎁
+            </button>
+            
+            <div class="treasure-result" id="treasureResult" style="display: none;">
+                <div class="treasure-box" id="treasureBox">🎁</div>
+                <div class="treasure-prize" id="treasurePrize"></div>
+            </div>
+            
+            <button class="close-treasure-btn" onclick="closeTreasure()">關閉</button>
+        </div>
+    </div>
 
     <script>
         // ★★★ 請把這裡改成您的 Apps Script Web App 網址 ★★★
         const API_URL = 'https://script.google.com/macros/s/AKfycbylCeRYjGoQajZ7XZIm6E5zWXxmXDMbegq0lv51Xg1Am0_Mq4TxaCtKZREBYUawn6W2dw/exec';
 
+        // ================= 等級設定（size 作為比例基準） =================
         const LEVELS = [
             { level: 0, name: '荒蕪', maxExp: 0, size: 60, building: '🪨' },
             { level: 1, name: '荒島', maxExp: 20, size: 90, building: '⛺' },
@@ -842,408 +784,377 @@
 
         let students = [];
 
-    function getLevelInfo(exp) {
-    // 從最低等開始往上找，找到第一個符合的等級
-    // LV0: exp = 0
-    // LV1: 1 <= exp <= 20
-    // LV2: 21 <= exp <= 45
-    // LV3: 46 <= exp <= 90
-    // LV4: 91 <= exp <= 150
-    // LV5: exp >= 151
-    if (exp <= 0) return LEVELS[0];
-    for (let i = 1; i < LEVELS.length; i++) {
-        if (exp <= LEVELS[i].maxExp) {
-            return LEVELS[i];
+        // ================= 取得等級資訊 =================
+        function getLevelInfo(exp) {
+            if (exp <= 0) return LEVELS[0];
+            for (let i = 1; i < LEVELS.length; i++) {
+                if (exp <= LEVELS[i].maxExp) {
+                    return LEVELS[i];
+                }
+            }
+            return LEVELS[LEVELS.length - 1];
         }
-    }
-    return LEVELS[LEVELS.length - 1];
-}
 
+        // ================= 渲染海洋與島嶼 =================
         function renderOcean() {
-    const container = document.getElementById('archipelago');
-    container.innerHTML = '';
+            const container = document.getElementById('archipelago');
+            container.innerHTML = '';
 
-    // 找出最高分
-    let maxExp = -1;
-    students.forEach(s => { if (s.total_exp > maxExp) maxExp = s.total_exp; });
+            let maxExp = -1;
+            students.forEach(s => { if (s.total_exp > maxExp) maxExp = s.total_exp; });
 
-    // 容器實際寬高
-    const containerWidth = container.clientWidth;
-    const containerHeight = container.clientHeight;
+            const containerWidth = container.clientWidth;
+            
+            // ★★★ 關鍵 1：根據屏幕寬度決定「一行顯示幾個島」 ★★★
+            let cols;
+            if (window.innerWidth < 600) {
+                cols = 2; // 手機：一行 2 個
+            } else if (window.innerWidth < 800) {
+                cols = 3; // 平板直向：一行 3 個
+            } else {
+                cols = 4; // 電腦 / iPad 橫向：一行 4 個
+            }
 
-    // 島嶼由下往上排列：先決定每個島嶼的「列」
-    // 假設一行最多 4 個，共 4 行
-    const cols = 4;
-    const rows = Math.ceil(students.length / cols);
+            const rows = Math.ceil(students.length / cols);
 
-    students.forEach((student, index) => {
-        const levelInfo = getLevelInfo(student.total_exp);
-        const landSize = levelInfo.size;
+            // ★★★ 關鍵 2：根據屏幕寬度計算「每個島的最大上限尺寸」 ★★★
+            const maxCellWidth = (containerWidth / cols) - 30; 
+            const maxCellHeight = (container.clientHeight / rows) - 30;
+            const maxAllowedSize = Math.min(maxCellWidth, maxCellHeight, 220); 
 
-        // 計算這個島嶼在第幾列、第幾欄
-        const col = index % cols;
-        const row = Math.floor(index / cols);
+            students.forEach((student, index) => {
+                const levelInfo = getLevelInfo(student.total_exp);
+                
+                // ★★★ 關鍵 3：動態縮放島嶼尺寸 ★★★
+                const scaleRatio = levelInfo.size / 300; 
+                let landSize = maxAllowedSize * scaleRatio;
+                landSize = Math.max(landSize, 40); // 確保最小 40px
 
-        // 基礎位置（由上往下算，但我們要讓第一列在最下面，所以反過來）
-        // row 0 放最底，row (rows-1) 放最頂
-        const rowFromBottom = row;
+                // 計算格位（由下往上排）
+                const col = index % cols;
+                const row = Math.floor(index / cols);
+                
+                const baseX = (containerWidth / cols) * (col + 0.5);
+                const baseY = container.clientHeight - ((container.clientHeight / rows) * (row + 0.5));
 
-        // 基礎 X 座標：平均分佈在容器寬度內
-        const baseX = (containerWidth / cols) * (col + 0.5);
+                // 加入微小隨機偏移
+                const offsetX = (Math.random() - 0.5) * 20;
+                const offsetY = (Math.random() - 0.5) * 20;
 
-        // 基礎 Y 座標：從底部往上
-        const baseY = containerHeight - ((containerHeight / rows) * (rowFromBottom + 0.5));
+                const posX = baseX + offsetX;
+                const posY = baseY + offsetY;
 
-        // 加入隨機偏移，讓島嶼不要對齊
-        const offsetX = (Math.random() - 0.5) * (containerWidth / cols) * 0.5;
-        const offsetY = (Math.random() - 0.5) * (containerHeight / rows) * 0.5;
+                // 天災狀態
+                let disasterClass = '';
+                let extraHTML = '';
 
-        const posX = baseX + offsetX;
-        const posY = baseY + offsetY;
+                if (student.repair_stage === 1) {
+                    disasterClass = 'disaster-kraken';
+                    extraHTML += `<div class="kraken-tentacle" style="top: -20px; left: -20px;">🦑</div>`;
+                    extraHTML += `<div class="kraken-tentacle" style="bottom: -20px; right: -20px;">🐙</div>`;
+                } else if (student.repair_stage === 2) {
+                    disasterClass = 'disaster-ruin';
+                    extraHTML += `<div class="repair-warning">🚧 維修中...</div>`;
+                } else if (student.today_score <= -6) {
+                    disasterClass = 'disaster-kraken';
+                } else if (student.today_score < 0) {
+                    disasterClass = 'disaster-storm';
+                    extraHTML += `<div class="lightning"></div>`;
+                    extraHTML += `<div class="storm-cloud" style="top: -30px; left: 10%;">☁️</div>`;
+                    extraHTML += `<div class="storm-cloud" style="top: -25px; right: 10%;">🌧️</div>`;
+                    extraHTML += `<div class="storm-cloud" style="top: -40px; left: 40%; font-size: 2.5rem;">⛈️</div>`;
+                }
 
-        // 天災狀態
-        let disasterClass = '';
-        let extraHTML = '';
+                // 裝飾物生成
+                let microItemsHTML = '';
+                const exp = student.total_exp;
 
-        if (student.repair_stage === 1) {
-            disasterClass = 'disaster-kraken';
-            extraHTML += `<div class="kraken-tentacle" style="top: -20px; left: -20px;">🦑</div>`;
-            extraHTML += `<div class="kraken-tentacle" style="bottom: -20px; right: -20px;">🐙</div>`;
-        } else if (student.repair_stage === 2) {
-            disasterClass = 'disaster-ruin';
-            extraHTML += `<div class="repair-warning">🚧 維修中...</div>`;
-        } else if (student.today_score <= -6) {
-            disasterClass = 'disaster-kraken';
-        } else if (student.today_score < 0) {
-    disasterClass = 'disaster-storm';
-    extraHTML += `<div class="lightning"></div>`;
-    // ★ 加入烏雲與颱風 emoji
-    extraHTML += `<div class="storm-cloud" style="top: -30px; left: 10%;">☁️</div>`;
-    extraHTML += `<div class="storm-cloud" style="top: -25px; right: 10%;">🌧️</div>`;
-    extraHTML += `<div class="storm-cloud" style="top: -40px; left: 40%; font-size: 2.5rem;">⛈️</div>`;
-}
+                function randomPosition() {
+                    const angle = Math.random() * Math.PI * 2;
+                    const radius = Math.random() * 42;
+                    return {
+                        x: 50 + Math.cos(angle) * radius,
+                        y: 50 + Math.sin(angle) * radius
+                    };
+                }
 
-        // ★★★ 新的裝飾物生成規則 ★★★
-        let microItemsHTML = '';
-        const exp = student.total_exp;
+                const flowerCount = Math.floor(exp / 1) + Math.floor(exp / 2);
+                for (let i = 0; i < flowerCount && i < 20; i++) {
+                    const pos = randomPosition();
+                    const emoji = Math.random() < 0.5 ? '🌸' : '🌿';
+                    microItemsHTML += `<div class="micro-item" style="left: ${pos.x}%; top: ${pos.y}%; animation-delay: ${Math.random() * 2}s;">${emoji}</div>`;
+                }
 
-        // 隨機在圓形範圍內取點
-        function randomPosition() {
-            const angle = Math.random() * Math.PI * 2;
-            const radius = Math.random() * 42; // 0~42% 半徑
-            return {
-                x: 50 + Math.cos(angle) * radius,
-                y: 50 + Math.sin(angle) * radius
-            };
-        }
+                const treeCount = Math.floor(exp / 3) + Math.floor(exp / 4);
+                for (let i = 0; i < treeCount && i < 12; i++) {
+                    const pos = randomPosition();
+                    const emoji = Math.random() < 0.5 ? '🌴' : '🌳';
+                    microItemsHTML += `<div class="micro-item" style="left: ${pos.x}%; top: ${pos.y}%; font-size: 1.1rem; animation-delay: ${Math.random() * 2}s;">${emoji}</div>`;
+                }
 
-        // 規則 1：每 1~2 點 EXP，生成花朵或綠草
-        const flowerCount = Math.floor(exp / 1) + Math.floor(exp / 2);
-        for (let i = 0; i < flowerCount && i < 20; i++) {
-            const pos = randomPosition();
-            const emoji = Math.random() < 0.5 ? '🌸' : '🌿';
-            microItemsHTML += `<div class="micro-item" style="left: ${pos.x}%; top: ${pos.y}%; animation-delay: ${Math.random() * 2}s;">${emoji}</div>`;
-        }
+                const creatureCount = Math.floor(exp / 5) + Math.floor(exp / 6);
+                const creatureEmojis = ['🐕', '🐓', '🚗', '🤖'];
+                for (let i = 0; i < creatureCount && i < 10; i++) {
+                    const pos = randomPosition();
+                    const emoji = creatureEmojis[Math.floor(Math.random() * creatureEmojis.length)];
+                    microItemsHTML += `<div class="micro-item" style="left: ${pos.x}%; top: ${pos.y}%; font-size: 1rem; animation-delay: ${Math.random() * 2}s;">${emoji}</div>`;
+                }
 
-        // 規則 2：每 3~4 點 EXP，生成椰子樹或橡樹
-        const treeCount = Math.floor(exp / 3) + Math.floor(exp / 4);
-        for (let i = 0; i < treeCount && i < 12; i++) {
-            const pos = randomPosition();
-            const emoji = Math.random() < 0.5 ? '🌴' : '🌳';
-            microItemsHTML += `<div class="micro-item" style="left: ${pos.x}%; top: ${pos.y}%; font-size: 1.1rem; animation-delay: ${Math.random() * 2}s;">${emoji}</div>`;
-        }
+                // 皇冠
+                let crownHTML = '';
+                if (student.total_exp === maxExp && maxExp > 0) {
+                    crownHTML = `<div style="position: absolute; top: -20px; right: -10px; font-size: 2rem; z-index: 30; animation: float 2s infinite;">👑</div>`;
+                }
 
-        // 規則 3：每 5~6 點 EXP，生成動物、車、機械人
-        const creatureCount = Math.floor(exp / 5) + Math.floor(exp / 6);
-        const creatureEmojis = ['🐕', '🐓', '🚗', '🤖'];
-        for (let i = 0; i < creatureCount && i < 10; i++) {
-            const pos = randomPosition();
-            const emoji = creatureEmojis[Math.floor(Math.random() * creatureEmojis.length)];
-            microItemsHTML += `<div class="micro-item" style="left: ${pos.x}%; top: ${pos.y}%; font-size: 1rem; animation-delay: ${Math.random() * 2}s;">${emoji}</div>`;
-        }
+                // ★★★ 關鍵 4：Emoji 大小與島嶼尺寸掛鉤 ★★★
+                const emojiSize = landSize * 0.4; 
+                const nameSize = Math.max(0.6, landSize / 100) + 'rem';
 
-        // 皇冠
-        let crownHTML = '';
-        if (student.total_exp === maxExp && maxExp > 0) {
-            crownHTML = `<div style="position: absolute; top: -20px; right: -10px; font-size: 2rem; z-index: 30; animation: float 2s infinite;">👑</div>`;
-        }
+                const island = document.createElement('div');
+                island.className = `island ${disasterClass}`;
+                island.style.left = `${posX}px`;
+                island.style.top = `${posY}px`;
+                island.style.width = `${landSize + 40}px`;
+                island.style.height = `${landSize + 40}px`;
 
-        const island = document.createElement('div');
-        island.className = `island ${disasterClass}`;
-        island.style.left = `${posX}px`;
-        island.style.top = `${posY}px`;
-        island.style.width = `${landSize + 40}px`;
-        island.style.height = `${landSize + 40}px`;
-
-       // 根據等級動態調整 Emoji 大小
-        const emojiSize = 2.5 + (levelInfo.level * 0.7); // LV0=2.5rem, LV5=6rem
-
-        island.innerHTML = `
-            <div class="island-canvas" style="width: ${landSize}px; height: ${landSize}px;">
-                ${extraHTML}
-                <div class="island-land">
-                    <div class="core-building" style="font-size: ${emojiSize}rem;">${levelInfo.building}</div>
-                  
-                    ${microItemsHTML}
-                    <div class="student-info">
-                        <div class="student-name">${student.id}. ${student.name}</div>
-                        <div class="student-stats">LV${levelInfo.level} ${levelInfo.name} | ${student.total_exp} EXP</div>
+                island.innerHTML = `
+                    <div class="island-canvas" style="width: ${landSize}px; height: ${landSize}px;">
+                        ${extraHTML}
+                        <div class="island-land">
+                            <div class="core-building" style="font-size: ${emojiSize}px;">${levelInfo.building}</div>
+                            ${microItemsHTML}
+                            <div class="student-info">
+                                <div class="student-name" style="font-size: ${nameSize};">${student.id}. ${student.name}</div>
+                                <div class="student-stats" style="font-size: calc(${nameSize} * 0.7);">LV${levelInfo.level} ${levelInfo.name} | ${student.total_exp} EXP</div>
+                            </div>
+                        </div>
+                        ${crownHTML}
                     </div>
-                </div>
-                ${crownHTML}
-            </div>
-        `;
-        container.appendChild(island);
-    });
-}
+                `;
+                container.appendChild(island);
+            });
+        }
 
-        // ★★★ 從 Google Sheets 讀取資料 ★★★
+        // ================= 從 Google Sheets 讀取資料 =================
         async function fetchStudents() {
             try {
                 const response = await fetch(API_URL);
                 const data = await response.json();
                 students = data;
                 renderOcean();
-                renderSettlement(); // ★ 新增這行
+                renderSettlement();
             } catch (err) {
                 console.error('讀取資料失敗：', err);
-    }
+            }
         }
 
-        // 每 10 秒更新一次
-        //setInterval(fetchStudents, 10000);
-        //window.addEventListener('load', fetchStudents);\
-// ================= 結算區渲染 =================
-function renderSettlement() {
-   // 1. 最強島主 Top 3（排除 16 號）
-    const EXCLUDED_IDS = ['16']; // ★ 不想參與排名的座號
-    
-    const sorted = [...students]
-        .filter(s => !EXCLUDED_IDS.includes(s.id))  // ★ 排除 16 號
-        .sort((a, b) => b.total_exp - a.total_exp);
-    
-    const top3 = sorted.slice(0, 3);
+        // ================= 結算區渲染 =================
+        function renderSettlement() {
+            // 1. 最強島主 Top 3（排除 16 號）
+            const EXCLUDED_IDS = ['16'];
+            
+            const sorted = [...students]
+                .filter(s => !EXCLUDED_IDS.includes(s.id))
+                .sort((a, b) => b.total_exp - a.total_exp);
+            
+            const top3 = sorted.slice(0, 3);
 
-    const podiumGrid = document.getElementById('podiumGrid');
-    podiumGrid.innerHTML = '';
+            const podiumGrid = document.getElementById('podiumGrid');
+            podiumGrid.innerHTML = '';
 
-    const crowns = ['👑👑👑', '👑👑', '👑'];
-    const rankNames = ['第 1 名', '第 2 名', '第 3 名'];
+            const crowns = ['👑👑👑', '👑👑', '👑'];
+            const rankNames = ['第 1 名', '第 2 名', '第 3 名'];
 
-    top3.forEach((student, index) => {
-        if (student.total_exp <= 0) return; // 0 分不顯示
+            top3.forEach((student, index) => {
+                if (student.total_exp <= 0) return;
 
-        const card = document.createElement('div');
-        card.className = `podium-card rank-${index + 1}`;
-        card.innerHTML = `
-            <div class="podium-crown">${crowns[index]}</div>
-            <div class="podium-name">${student.id}. ${student.name}</div>
-            <div class="podium-exp">${student.total_exp} EXP</div>
-            <div class="podium-rank">${rankNames[index]}</div>
-        `;
-        podiumGrid.appendChild(card);
-    });
+                const card = document.createElement('div');
+                card.className = `podium-card rank-${index + 1}`;
+                card.innerHTML = `
+                    <div class="podium-crown">${crowns[index]}</div>
+                    <div class="podium-name">${student.id}. ${student.name}</div>
+                    <div class="podium-exp">${student.total_exp} EXP</div>
+                    <div class="podium-rank">${rankNames[index]}</div>
+                `;
+                podiumGrid.appendChild(card);
+            });
 
-    // 如果沒有 Top 3（全部 0 分）
-    if (podiumGrid.children.length === 0) {
-        podiumGrid.innerHTML = '<p style="color: #94a3b8; text-align: center;">本週暫無島主</p>';
-    }
+            if (podiumGrid.children.length === 0) {
+                podiumGrid.innerHTML = '<p style="color: #94a3b8; text-align: center;">本週暫無島主</p>';
+            }
 
-    // 2. 沉沒之島（total_exp < 0，但因為 total_exp 最低為 0，所以改用 today_score < 0 或 repair_stage > 0）
-    // 根據您的需求：沉沒標準是「最後結算完的總分為負分」
-    // 因為 total_exp 不會為負，所以我們用 today_score < 0 或 repair_stage > 0 來判斷
-   const sunken = students
-    .filter(s => !EXCLUDED_IDS.includes(s.id))  // ★ 排除 16 號
-    .filter(s => s.weekly_score < 0);
+            // 2. 沉沒之島（本週分數為負）
+            const sunken = students
+                .filter(s => !EXCLUDED_IDS.includes(s.id))
+                .filter(s => s.weekly_score < 0);
 
-    const sunkenGrid = document.getElementById('sunkenGrid');
-    sunkenGrid.innerHTML = '';
+            const sunkenGrid = document.getElementById('sunkenGrid');
+            sunkenGrid.innerHTML = '';
 
-    if (sunken.length === 0) {
-        sunkenGrid.innerHTML = '<p style="color: #22c55e; text-align: center; grid-column: 1 / -1;">🎉 本週沒有島嶼沉沒，全班表現優秀！</p>';
-    } else {
-        sunken.forEach(student => {
-            const card = document.createElement('div');
-            card.className = 'sunken-card';
-            card.onclick = () => openTreasureModal(student);
-            card.innerHTML = `
-                <div class="sunken-name">${student.id}. ${student.name}</div>
-                <div class="sunken-score">本週：${student.weekly_score} 分</div>
-                <div class="sunken-hint">點擊開啟寶藏 🎁</div>
-            `;
-            sunkenGrid.appendChild(card);
-        });
-    }
-}
+            if (sunken.length === 0) {
+                sunkenGrid.innerHTML = '<p style="color: #22c55e; text-align: center; grid-column: 1 / -1;">🎉 本週沒有島嶼沉沒，全班表現優秀！</p>';
+            } else {
+                sunken.forEach(student => {
+                    const card = document.createElement('div');
+                    card.className = 'sunken-card';
+                    card.onclick = () => openTreasureModal(student);
+                    card.innerHTML = `
+                        <div class="sunken-name">${student.id}. ${student.name}</div>
+                        <div class="sunken-score">本週：${student.weekly_score} 分</div>
+                        <div class="sunken-hint">點擊開啟寶藏 🎁</div>
+                    `;
+                    sunkenGrid.appendChild(card);
+                });
+            }
+        }
 
-// ================= 終極大寶藏 =================
-let currentTreasureStudent = null;
+        // ================= 終極大寶藏 =================
+        let currentTreasureStudent = null;
 
-function openTreasureModal(student) {
-    currentTreasureStudent = student;
-    document.getElementById('treasureStudentName').textContent = `${student.id}. ${student.name}`;
-    
-    // 重置狀態
-    document.getElementById('treasureResult').style.display = 'none';
-    document.getElementById('openTreasureBtn').style.display = 'block';
-    document.getElementById('treasureBox').className = 'treasure-box';
-    document.getElementById('treasurePrize').innerHTML = '';
-    
-    // 渲染懲罰清單（根據分數決定哪些顯示、哪些鎖定）
-    renderPunishmentList(student.weekly_score);
-    
-    // 顯示 Modal
-    document.getElementById('treasureModal').classList.add('active');
-}
+        function openTreasureModal(student) {
+            currentTreasureStudent = student;
+            document.getElementById('treasureStudentName').textContent = `${student.id}. ${student.name}`;
+            
+            document.getElementById('treasureResult').style.display = 'none';
+            document.getElementById('openTreasureBtn').style.display = 'block';
+            document.getElementById('treasureBox').className = 'treasure-box';
+            document.getElementById('treasurePrize').innerHTML = '';
+            
+            renderPunishmentList(student.weekly_score);
+            
+            document.getElementById('treasureModal').classList.add('active');
+        }
 
-function renderPunishmentList(score) {
-    const absScore = Math.abs(score);
-    const list = document.getElementById('punishmentList');
-    list.innerHTML = '';
+        function renderPunishmentList(score) {
+            const absScore = Math.abs(score);
+            const list = document.getElementById('punishmentList');
+            list.innerHTML = '';
 
-    const punishments = [
-        { id: 1, text: '20 下掌上壓 🧎🏻‍➡️', unlock: 0 },
-        { id: 2, text: '30 下波比跳 🕴🏻', unlock: 8 },
-        { id: 3, text: '清潔班房的地板和黑板 🧹', unlock: 0 },
-        { id: 4, text: '清潔樓層的地板和自己班房嘅𥦬 🧹🪟', unlock: 0 },
-        { id: 5, text: '罰抄學生約章一次 📜', unlock: 6 },
-        { id: 6, text: '下星期二四沒有小息和午息', unlock: 6 },
-        { id: 7, text: '下星期一三五沒有小息和午息', unlock: 8 },
-        { id: 8, text: '抄寫鮑思高神父生平簡介 📓', unlock: 8 },
-        { id: 9, text: '放學過隔離 T34 室休息半個鐘 🤡', unlock: 6 },
-        { id: 10, text: '放學過隔離 T34 室休息 45 分鐘 🤡', unlock: 8 },
-        { id: 11, text: '耶穌愛您，豁免一次 🙏', unlock: 0 },
-        { id: 12, text: '在班上唱一首歌 🎤', unlock: 0 },
-        { id: 13, text: '在班上跳一隻舞 🕺🏼', unlock: 0 },
-        { id: 14, text: '讀一篇文章 🗣️', unlock: 0 },
-        { id: 15, text: '繪畫校徽兩個🖍️🖍️', unlock: 0 },
-        { id: 16, text: '帶領祈禱一次（聖三光榮經）🙏🏻', unlock: 0 },
-        { id: 17, text: '做一條數學題 但唔用計數機📵', unlock: 0 },
-    ];
+            const punishments = [
+                { id: 1, text: '20 下掌上壓 🧎🏻‍➡️', unlock: 0 },
+                { id: 2, text: '30 下波比跳 🕴🏻', unlock: 8 },
+                { id: 3, text: '清潔班房的地板和黑板 🧹', unlock: 0 },
+                { id: 4, text: '清潔樓層的地板和自己班房嘅𥦬 🧹🪟', unlock: 0 },
+                { id: 5, text: '罰抄學生約章一次 📜', unlock: 6 },
+                { id: 6, text: '下星期二四沒有小息和午息', unlock: 6 },
+                { id: 7, text: '下星期一三五沒有小息和午息', unlock: 8 },
+                { id: 8, text: '抄寫鮑思高神父生平簡介 📓', unlock: 8 },
+                { id: 9, text: '放學過隔離 T34 室休息半個鐘 🤡', unlock: 6 },
+                { id: 10, text: '放學過隔離 T34 室休息 45 分鐘 🤡', unlock: 8 },
+                { id: 11, text: '耶穌愛您，豁免一次 🙏', unlock: 0 },
+                { id: 12, text: '在班上唱一首歌 🎤', unlock: 0 },
+                { id: 13, text: '在班上跳一隻舞 🕺🏼', unlock: 0 },
+                { id: 14, text: '讀一篇文章 🗣️', unlock: 0 },
+                { id: 15, text: '繪畫校徽兩個🖍️🖍️', unlock: 0 },
+                { id: 16, text: '帶領祈禱一次（聖三光榮經）🙏🏻', unlock: 0 },
+                { id: 17, text: '做一條數學題 但唔用計數機📵', unlock: 0 },
+            ];
 
-    punishments.forEach(p => {
-        const item = document.createElement('div');
-        const isUnlocked = absScore >= p.unlock;
-        item.className = `punishment-item ${isUnlocked ? '' : 'locked'}`;
-        item.textContent = p.text;
-        list.appendChild(item);
-    });
-}
+            punishments.forEach(p => {
+                const item = document.createElement('div');
+                const isUnlocked = absScore >= p.unlock;
+                item.className = `punishment-item ${isUnlocked ? '' : 'locked'}`;
+                item.textContent = p.text;
+                list.appendChild(item);
+            });
+        }
 
-function openTreasure() {
-    if (!currentTreasureStudent) return;
+        function openTreasure() {
+            if (!currentTreasureStudent) return;
 
-    const box = document.getElementById('treasureBox');
-    const prize = document.getElementById('treasurePrize');
-    const btn = document.getElementById('openTreasureBtn');
-    const result = document.getElementById('treasureResult');
+            const box = document.getElementById('treasureBox');
+            const prize = document.getElementById('treasurePrize');
+            const btn = document.getElementById('openTreasureBtn');
+            const result = document.getElementById('treasureResult');
 
-    // 顯示結果區
-    result.style.display = 'block';
-    btn.style.display = 'none';
+            result.style.display = 'block';
+            btn.style.display = 'none';
+            box.classList.add('opened');
 
-    // 播放寶箱動畫
-    box.classList.add('opened');
+            setTimeout(() => {
+                const punishmentId = drawPunishment(currentTreasureStudent.weekly_score);
+                const punishment = getPunishmentText(punishmentId);
+                prize.innerHTML = `🎉 恭喜抽中！<br><span style="font-size: 1.8rem;">${punishment}</span>`;
+            }, 800);
+        }
 
-    // 延遲一下再顯示獎品（等動畫播完）
-    setTimeout(() => {
-        const punishmentId = drawPunishment(currentTreasureStudent.weekly_score);
-        const punishment = getPunishmentText(punishmentId);
-        prize.innerHTML = `🎉 恭喜抽中！<br><span style="font-size: 1.8rem;">${punishment}</span>`;
-    }, 800);
-}
+        function drawPunishment(score) {
+            const absScore = Math.abs(score);
+            
+            let pool = [
+                { id: 1, weight: 25 },
+                { id: 2, weight: 25 },
+                { id: 3, weight: 20 },
+                { id: 4, weight: 20 },
+                { id: 11, weight: 0.1 },
+                { id: 12, weight: 20 },
+                { id: 13, weight: 20 },
+                { id: 14, weight: 25 },
+                { id: 15, weight: 25 },
+                { id: 16, weight: 25 },
+                { id: 17, weight: 25 },
+            ];
+            
+            if (absScore >= 6) {
+                pool.push(
+                    { id: 5, weight: 12 },
+                    { id: 6, weight: 8 },
+                    { id: 8, weight: 10 },
+                    { id: 9, weight: 11 },
+                );
+            }
+            
+            if (absScore >= 8) {
+                pool.push(
+                    { id: 7, weight: 26 },
+                    { id: 10, weight: 26 },
+                );
+            }
+            
+            const total = pool.reduce((sum, p) => sum + p.weight, 0);
+            let rand = Math.random() * total;
+            for (const p of pool) {
+                rand -= p.weight;
+                if (rand <= 0) return p.id;
+            }
+            return pool[0].id;
+        }
 
-function drawPunishment(score) {
-    const absScore = Math.abs(score);
-    
-    // 基礎池（永遠存在）
-    let pool = [
-        { id: 1, weight: 25 },
-        { id: 2, weight: 25 },
-        { id: 3, weight: 20 },
-        { id: 4, weight: 20 },
-        { id: 11, weight: 0.1 },  // 永遠最低
-        { id: 12, weight: 20 },
-        { id: 13, weight: 20 },
-        { id: 14, weight: 25 },
-        { id: 15, weight: 25 },
-        { id: 16, weight: 25 },
-        { id: 17, weight: 25 },
-    ];
-    
-    // -10 分解鎖 5, 6, 8, 9
-    if (absScore >= 6) {
-        pool.push(
-            { id: 5, weight: 12 },
-            { id: 6, weight: 8 },
-            { id: 8, weight: 10 },
-            { id: 9, weight: 11 },
-        );
-    }
-    
-    // -15 分解鎖 7, 10（機率高過 1-4）
-    if (absScore >= 8) {
-        pool.push(
-            { id: 7, weight: 26 },
-            { id: 10, weight: 26 },
-        );
-    }
-    
-    // 加權隨機
-    const total = pool.reduce((sum, p) => sum + p.weight, 0);
-    let rand = Math.random() * total;
-    for (const p of pool) {
-        rand -= p.weight;
-        if (rand <= 0) return p.id;
-    }
-    return pool[0].id;
-}
+        function getPunishmentText(id) {
+            const punishments = {
+                1: '20 下掌上壓 🧎🏻‍➡️',
+                2: '20 下波比跳 🕴🏻',
+                3: '清潔班房的地板和黑板 🧹',
+                4: '清潔樓層的地板和自己班房黑板 🧹',
+                5: '罰抄學生約章一次 📜',
+                6: '下星期二四沒有小息和午息',
+                7: '下星期一三五沒有小息和午息',
+                8: '罰抄校規一次 📓',
+                9: '放學過隔離 T34 室休息半個鐘 🤡',
+                10: '放學過隔離 T34 室休息 45 分鐘 🤡',
+                11: '耶穌愛您，豁免一次 🙏',
+                12: '在班上唱一首歌 🎤',
+                13: '在班上跳一隻舞 🕺🏼',
+                14: '讀一篇文章 🗣️',
+                15: '繪畫校徽兩個🖍️🖍️',
+                16: '帶領祈禱一次（聖三光榮經）🙏🏻',
+                17: '做一條數學題 但唔用計數機📵',
+            };
+            return punishments[id] || '未知懲罰';
+        }
 
-function getPunishmentText(id) {
-    const punishments = {
-        1: '20 下掌上壓 🧎🏻‍➡️',
-        2: '20 下波比跳 🕴🏻',
-        3: '清潔班房的地板和黑板 🧹',
-        4: '清潔樓層的地板和自己班房黑板 🧹',
-        5: '罰抄學生約章一次 📜',
-        6: '下星期二四沒有小息和午息',
-        7: '下星期一三五沒有小息和午息',
-        8: '罰抄校規一次 📓',
-        9: '放學過隔離 T34 室休息半個鐘 🤡',
-        10: '放學過隔離 T34 室休息 45 分鐘 🤡',
-        11: '耶穌愛您，豁免一次 🙏',
-        12: '在班上唱一首歌 🎤',
-        13: '在班上跳一隻舞 🕺🏼',
-        14: '讀一篇文章 🗣️',
-        15: '繪畫校徽兩個🖍️🖍️',
-        16: '帶領祈禱一次（聖三光榮經）🙏🏻',
-        17: '做一條數學題 但唔用計數機📵',
-    };
-    return punishments[id] || '未知懲罰';
-}
+        function closeTreasure() {
+            document.getElementById('treasureModal').classList.remove('active');
+            currentTreasureStudent = null;
+        }
 
-function closeTreasure() {
-    document.getElementById('treasureModal').classList.remove('active');
-    currentTreasureStudent = null;
-}
-
-// ================= 修改 fetchStudents，讓它同時渲染結算區 =================
-// 找到原本的 fetchStudents，改成：
-async function fetchStudents() {
-    try {
-        const response = await fetch(API_URL);
-        const data = await response.json();
-        students = data;
-        renderOcean();
-        renderSettlement(); // ★ 新增這行
-    } catch (err) {
-        console.error('讀取資料失敗：', err);
-    }
-}
-        
-        
-        // 只在頁面載入時抓一次，之後手動按按鈕更新
+        // ================= 頁面載入時自動抓取資料 =================
         window.addEventListener('load', fetchStudents);
+        
+        // 當視窗大小改變時（例如手機轉向），重新排版
+        window.addEventListener('resize', () => {
+            if (students.length > 0) renderOcean();
+        });
     </script>
 </body>
 </html>
