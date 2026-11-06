@@ -70,7 +70,7 @@
         .archipelago {
     position: relative;
     width: 100%;
-    min-height: 85vh;
+    min-height: 120vh;
     padding: 40px 10px;
 }
           /* ================= 單一島嶼 ================= */
@@ -114,7 +114,7 @@
             z-index: 2;
         }
         .core-building {
-            font-size: 6rem;
+            font-size: 3.5rem; /* 從 6rem 改小，避免撐爆小島 */
             position: absolute;
             top: 50%;
             left: 50%;
@@ -126,7 +126,7 @@
         /* 學生資訊 (顯示在建築物下方) */
         .student-info {
             position: absolute;
-            top: 75%;
+            top: 70%;
             left: 50%;
             transform: translateX(-50%);
             text-align: center;
@@ -832,12 +832,12 @@
         const API_URL = 'https://script.google.com/macros/s/AKfycbylCeRYjGoQajZ7XZIm6E5zWXxmXDMbegq0lv51Xg1Am0_Mq4TxaCtKZREBYUawn6W2dw/exec';
 
         const LEVELS = [
-            { level: 0, name: '荒蕪', maxExp: 0, size: 10, building: '🪨' },
-            { level: 1, name: '荒島', maxExp: 20, size: 30, building: '⛺' },
-            { level: 2, name: '營地', maxExp: 45, size: 60, building: '🏕️' },
-            { level: 3, name: '部落', maxExp: 90, size: 100, building: '🏰' },
-            { level: 4, name: '城鎮', maxExp: 150, size: 150, building: '🏙️' },
-            { level: 5, name: '帝國', maxExp: Infinity, size: 200, building: '🌆' }
+            { level: 0, name: '荒蕪', maxExp: 0, size: 60, building: '🪨' },
+            { level: 1, name: '荒島', maxExp: 20, size: 90, building: '⛺' },
+            { level: 2, name: '營地', maxExp: 45, size: 130, building: '🏕️' },
+            { level: 3, name: '部落', maxExp: 90, size: 180, building: '🏰' },
+            { level: 4, name: '城鎮', maxExp: 150, size: 240, building: '🏙️' },
+            { level: 5, name: '帝國', maxExp: Infinity, size: 300, building: '🌆' }
         ];
 
         let students = [];
@@ -975,11 +975,15 @@
         island.style.width = `${landSize + 40}px`;
         island.style.height = `${landSize + 40}px`;
 
+       // 根據等級動態調整 Emoji 大小
+        const emojiSize = 2.5 + (levelInfo.level * 0.7); // LV0=2.5rem, LV5=6rem
+
         island.innerHTML = `
             <div class="island-canvas" style="width: ${landSize}px; height: ${landSize}px;">
                 ${extraHTML}
                 <div class="island-land">
-                    <div class="core-building">${levelInfo.building}</div>
+                    <div class="core-building" style="font-size: ${emojiSize}rem;">${levelInfo.building}</div>
+                  
                     ${microItemsHTML}
                     <div class="student-info">
                         <div class="student-name">${student.id}. ${student.name}</div>
