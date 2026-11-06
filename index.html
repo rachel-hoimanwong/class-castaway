@@ -72,7 +72,7 @@
         .archipelago {
             position: relative;
             width: 100%;
-            min-height: 120vh;
+            min-height: 130vh; /* 加高以容納更大的島 */
             padding: 40px 10px;
         }
         .island {
@@ -817,10 +817,10 @@
 
             const rows = Math.ceil(students.length / cols);
 
-            // ★★★ 關鍵 2：根據屏幕寬度計算「每個島的最大上限尺寸」 ★★★
-            const maxCellWidth = (containerWidth / cols) - 30; 
-            const maxCellHeight = (container.clientHeight / rows) - 30;
-            const maxAllowedSize = Math.min(maxCellWidth, maxCellHeight, 220); 
+            // ★★★ 關鍵 2：根據屏幕寬度計算「每個島的最大上限尺寸」（整體放大了約 20%） ★★★
+            const maxCellWidth = (containerWidth / cols) - 20; // 減少一點預留空間，讓島更大
+            const maxCellHeight = (container.clientHeight / rows) - 20;
+            const maxAllowedSize = Math.min(maxCellWidth, maxCellHeight, 260); // 從 220 提升到 260
 
             students.forEach((student, index) => {
                 const levelInfo = getLevelInfo(student.total_exp);
@@ -828,7 +828,7 @@
                 // ★★★ 關鍵 3：動態縮放島嶼尺寸 ★★★
                 const scaleRatio = levelInfo.size / 300; 
                 let landSize = maxAllowedSize * scaleRatio;
-                landSize = Math.max(landSize, 40); // 確保最小 40px
+                landSize = Math.max(landSize, 50); // 確保最小 50px（從 40 放大）
 
                 // 計算格位（由下往上排）
                 const col = index % cols;
@@ -837,9 +837,13 @@
                 const baseX = (containerWidth / cols) * (col + 0.5);
                 const baseY = container.clientHeight - ((container.clientHeight / rows) * (row + 0.5));
 
-                // 加入微小隨機偏移
-                const offsetX = (Math.random() - 0.5) * 20;
-                const offsetY = (Math.random() - 0.5) * 20;
+                // ★★★ 關鍵 4：加大隨機偏移量，製造不規則群島效果 ★★★
+                // 偏移量設定為格子大小的 30%，讓島嶼在格子內隨意散落
+                const randomRangeX = (containerWidth / cols) * 0.3;
+                const randomRangeY = (container.clientHeight / rows) * 0.3;
+                
+                const offsetX = (Math.random() - 0.5) * randomRangeX;
+                const offsetY = (Math.random() - 0.5) * randomRangeY;
 
                 const posX = baseX + offsetX;
                 const posY = baseY + offsetY;
@@ -906,7 +910,7 @@
                     crownHTML = `<div style="position: absolute; top: -20px; right: -10px; font-size: 2rem; z-index: 30; animation: float 2s infinite;">👑</div>`;
                 }
 
-                // ★★★ 關鍵 4：Emoji 大小與島嶼尺寸掛鉤 ★★★
+                // ★★★ 關鍵 5：Emoji 大小與島嶼尺寸掛鉤 ★★★
                 const emojiSize = landSize * 0.4; 
                 const nameSize = Math.max(0.6, landSize / 100) + 'rem';
 
